@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech&family=Tomorrow:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Tomorrow", sans-serif;
+  --font-sans: "Share Tech", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+  --font-inknut: "Tomorrow", sans-serif; /* fallback for legacy component classes */
+
+  --color-background: #CCCCCC;
+  --color-primary: #0C0C11;
+  --color-panel: #FAF9FC;
+  --color-details: #CCCCCC;
+  --color-theme: #7D52FC;
+  --color-accent: #62289C;
+  --color-secondary: #BCEF0C;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
+}
+
+/* Custom Scrollbar for V4_SYS light editorial grid */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-details);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-theme);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Technical Drafting Grid Flow background */
+.grid-flow-bg {
+  position: absolute;
+  inset: 0;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background-image: linear-gradient(to right, var(--color-primary, #0C0C11) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--color-primary, #0C0C11) 1px, transparent 1px);
+  background-size: 80px 80px;
+  animation: grid-flow 45s linear infinite;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 1s ease-in-out;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 80%);
+}
+
+@keyframes grid-flow {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Subtle ebbing brand color wash - extremely soft background gradient */
+.ebbing-gradient {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 35% 45%, var(--color-theme, #7D52FC) 0%, transparent 45%),
+              radial-gradient(circle at 65% 55%, var(--color-accent, #62289C) 0%, transparent 45%);
+  opacity: 0.03;
+  filter: blur(120px);
+  animation: gradient-flow 25s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: multiply;
+  transition: background 1s ease-in-out;
+}
+
+@keyframes gradient-flow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.05); }
+  100% { transform: rotate(-3deg) scale(1.02); }
+}
+
