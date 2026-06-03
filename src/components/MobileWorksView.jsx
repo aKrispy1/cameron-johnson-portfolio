@@ -185,7 +185,7 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
 
   return (
     <div 
-      className="flex-1 w-full flex flex-col justify-between p-4 overflow-hidden select-none bg-[var(--color-background)] h-[calc(100vh-80px)]"
+      className="w-full flex flex-col justify-between p-4 pt-[104px] pb-4 overflow-hidden select-none bg-[var(--color-background)] h-screen"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
