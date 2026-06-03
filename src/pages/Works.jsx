@@ -25,6 +25,12 @@ const Works = () => {
     setShowGallery(false);
   };
 
+  const handleNextCaseStudy = () => {
+    const currentIndex = portfolioLegends.findIndex(l => l.id === selectedId);
+    const nextIndex = (currentIndex + 1) % portfolioLegends.length;
+    setSelectedId(portfolioLegends[nextIndex].id);
+  };
+
   // Sync theme variables based on selection
   useEffect(() => {
     if (currentLegend) {
@@ -58,19 +64,33 @@ const Works = () => {
       <div className="ebbing-gradient" />
       <WavyGrid />
 
+      {/* Background dimmer overlay when presentation is open */}
+      <div className={`absolute inset-0 bg-black/20 transition-opacity duration-700 pointer-events-none z-0 ${
+        showGallery ? 'opacity-100' : 'opacity-0'
+      }`} />
+
       {/* Left Column - Project Directory Menu */}
-      <LegendMenu 
-        selectedId={selectedId} 
-        onSelect={handleSelect} 
-        legends={portfolioLegends} 
-      />
+      <div className={`transition-all duration-700 z-40 ${
+        showGallery ? 'opacity-40 lg:opacity-30 blur-[0.5px] pointer-events-none' : 'opacity-100'
+      }`}>
+        <LegendMenu 
+          selectedId={selectedId} 
+          onSelect={handleSelect} 
+          legends={portfolioLegends} 
+          showGallery={showGallery}
+        />
+      </div>
 
       {/* Center & Right Column Layout (Main content area) */}
       <div className="flex-1 flex flex-col lg:flex-row relative">
         
         {/* Center Pane - Graphic Display */}
         {showGallery ? (
-          <CaseStudyView legend={currentLegend} onClose={() => setShowGallery(false)} />
+          <CaseStudyView 
+            legend={currentLegend} 
+            onClose={() => setShowGallery(false)} 
+            onNextProject={handleNextCaseStudy}
+          />
         ) : (
           <LegendDisplay legend={currentLegend} />
         )}

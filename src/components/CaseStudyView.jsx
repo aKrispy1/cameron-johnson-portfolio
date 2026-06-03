@@ -49,7 +49,7 @@ const GallerySubGrid = ({ images }) => {
   );
 };
 
-const CaseStudyView = ({ legend, onClose }) => {
+const CaseStudyView = ({ legend, onClose, onNextProject }) => {
   const isDark = legend.bgColor === '#0a0a0a';
   const caseStudy = legend.caseStudy || {};
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -190,7 +190,7 @@ const CaseStudyView = ({ legend, onClose }) => {
           loop 
           muted 
           playsInline
-          className="max-w-[85%] max-h-[85%] object-contain shadow-sm border border-[var(--color-primary)]/10"
+          className="w-full h-full object-cover shadow-sm"
         />
       );
     } else if (slide.mediaType === 'gallery') {
@@ -200,7 +200,7 @@ const CaseStudyView = ({ legend, onClose }) => {
         <img 
           src={slide.media} 
           alt={slide.title} 
-          className="max-w-[85%] max-h-[85%] object-contain"
+          className="w-full h-full object-cover"
         />
       );
     }
@@ -230,12 +230,22 @@ const CaseStudyView = ({ legend, onClose }) => {
         </div>
 
         {onClose && (
-          <button 
-            onClick={onClose}
-            className="font-mono text-xs text-[var(--color-primary)]/40 hover:text-[var(--color-theme)] border border-[var(--color-primary)]/10 hover:border-[var(--color-theme)] px-3 py-1.5 transition-colors cursor-pointer focus:outline-none"
-          >
-            [ EXIT PRESENTATION ]
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={onClose}
+              className="font-mono text-xs text-[var(--color-primary)]/40 hover:text-[var(--color-theme)] border border-[var(--color-primary)]/10 hover:border-[var(--color-theme)] px-3 py-1.5 transition-colors cursor-pointer focus:outline-none rounded-none"
+            >
+              [ EXIT PRESENTATION ]
+            </button>
+            {onNextProject && (
+              <button 
+                onClick={onNextProject}
+                className="font-mono text-xs text-white bg-[var(--color-theme)] hover:bg-[var(--color-theme)]/80 border border-transparent px-3 py-1.5 transition-colors cursor-pointer focus:outline-none rounded-none font-bold"
+              >
+                [ NEXT PRESENTATION ]
+              </button>
+            )}
+          </div>
         )}
       </div>
 
@@ -248,14 +258,14 @@ const CaseStudyView = ({ legend, onClose }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className={`w-full max-w-6xl backdrop-blur-xl shadow-2xl border p-6 lg:p-10 rounded-lg grid grid-cols-1 lg:grid-cols-12 gap-8 items-center ${
+            className={`w-full max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] backdrop-blur-xl shadow-2xl border p-6 lg:p-10 rounded-none grid grid-cols-1 lg:grid-cols-12 gap-8 items-center ${
               isDark 
                 ? 'bg-black/40 border-white/10' 
                 : 'bg-[var(--color-primary)]/[0.08] border-[var(--color-primary)]/10'
             }`}
           >
             {/* Left Box: Graphic Canvas */}
-            <div className="lg:col-span-6 h-[260px] lg:h-[400px] border border-[var(--color-primary)]/15 bg-black/30 backdrop-blur-sm relative flex items-center justify-center p-6 shadow-md rounded-md">
+            <div className="lg:col-span-6 h-[260px] lg:h-[480px] border border-[var(--color-primary)]/15 bg-black/30 backdrop-blur-sm relative flex items-center justify-center p-0 overflow-hidden shadow-md rounded-none">
               {/* Technical drafting metadata */}
               <span className="absolute top-2 left-3 font-mono text-[8px] text-[var(--color-primary)]/20">
                 [SLIDE.ASSET]
@@ -267,7 +277,7 @@ const CaseStudyView = ({ legend, onClose }) => {
             </div>
 
             {/* Right Box: Text Narrative Card */}
-            <div className={`lg:col-span-6 flex flex-col justify-between p-6 lg:p-8 shadow-lg border rounded-md h-full min-h-[300px] lg:h-[400px] ${
+            <div className={`lg:col-span-6 flex flex-col justify-between p-6 lg:p-8 shadow-lg border rounded-none h-full min-h-[300px] lg:h-[480px] ${
               isDark
                 ? 'bg-black/60 border-white/10 text-white/95'
                 : 'bg-white/80 border-white/30 text-[var(--color-primary)]'
@@ -346,61 +356,61 @@ const CaseStudyView = ({ legend, onClose }) => {
       </div>
 
       {/* Bottom Timeline Progress & Controls */}
-      <div className="px-8 lg:px-12 pb-8 flex flex-col gap-4 z-20">
+      <div className="w-full pb-8 flex flex-col gap-4 z-20">
         
-        {/* Timeline dots indicators */}
-        <div className="flex gap-2 justify-center">
-          {slides.map((_, idx) => (
+        {/* Progress Timeline indicators & Action Row */}
+        <div className="max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] w-full mx-auto border-t border-[var(--color-primary)]/10 pt-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          
+          {/* Left: Tooltip info */}
+          <div className="flex-1 text-left hidden md:block">
+            <span className="font-mono text-[9px] text-[var(--color-primary)]/40 tracking-wider">
+              SWIPE TO NAVIGATE // OR USE LEFT/RIGHT ARROW KEYS
+            </span>
+          </div>
+
+          {/* Middle: Timeline dots */}
+          <div className="flex gap-2 justify-center flex-1">
+            {slides.map((_, idx) => (
+              <button 
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-1.5 transition-all duration-300 cursor-pointer rounded-none ${
+                  idx === currentSlide 
+                    ? 'w-8 bg-[var(--color-theme)]' 
+                    : 'w-2 bg-[var(--color-primary)]/15 hover:bg-[var(--color-primary)]/35'
+                }`}
+                title={`Jump to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Right: Grouped Slide Navigation Buttons */}
+          <div className="flex-1 flex justify-end items-center gap-2">
             <button 
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`h-1.5 transition-all duration-300 cursor-pointer rounded-none ${
-                idx === currentSlide 
-                  ? 'w-8 bg-[var(--color-theme)]' 
-                  : 'w-2 bg-[var(--color-primary)]/15 hover:bg-[var(--color-primary)]/35'
+              onClick={prevSlide}
+              disabled={currentSlide === 0}
+              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs ${
+                currentSlide === 0 
+                  ? 'opacity-25 border-[var(--color-primary)]/10 text-[var(--color-primary)]/40 cursor-not-allowed bg-transparent' 
+                  : 'border-[var(--color-primary)]/20 text-[var(--color-primary)] bg-white hover:bg-[var(--color-theme)] hover:text-white hover:border-[var(--color-theme)]'
               }`}
-              title={`Jump to slide ${idx + 1}`}
-            />
-          ))}
+            >
+              ← PREV
+            </button>
+            <button 
+              onClick={nextSlide}
+              disabled={currentSlide === slides.length - 1}
+              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs ${
+                currentSlide === slides.length - 1 
+                  ? 'opacity-25 border-[var(--color-primary)]/10 text-[var(--color-primary)]/40 cursor-not-allowed bg-transparent' 
+                  : 'border-[var(--color-theme)] text-white bg-[var(--color-theme)] hover:bg-[var(--color-theme)]/80 hover:border-[var(--color-theme)]/80'
+              }`}
+            >
+              NEXT →
+            </button>
+          </div>
+
         </div>
-
-        {/* Slide Navigation Buttons */}
-        <div className="flex items-center justify-between border-t border-[var(--color-primary)]/10 pt-4">
-          <button 
-            onClick={prevSlide}
-            disabled={currentSlide === 0}
-            className={`flex items-center gap-3 cursor-pointer group focus:outline-none transition-opacity ${
-              currentSlide === 0 ? 'opacity-20 cursor-not-allowed' : 'opacity-100'
-            }`}
-          >
-            <div className="w-10 h-10 border border-[var(--color-primary)]/20 flex items-center justify-center group-hover:border-[var(--color-theme)] group-hover:bg-[var(--color-theme)] group-hover:text-white transition-all duration-300 rounded-none text-[var(--color-primary)]">
-              <span className="font-mono text-xs group-hover:-translate-x-0.5 transition-transform duration-300">←</span>
-            </div>
-            <span className="text-xs font-mono tracking-widest text-[var(--color-primary)] group-hover:text-[var(--color-theme)] transition-colors uppercase">
-              Prev Slide
-            </span>
-          </button>
-
-          <span className="font-mono text-[9px] text-[var(--color-primary)]/30 hidden md:block">
-            SWIPE TO NAVIGATE // OR USE LEFT/RIGHT ARROW KEYS
-          </span>
-
-          <button 
-            onClick={nextSlide}
-            disabled={currentSlide === slides.length - 1}
-            className={`flex items-center gap-3 cursor-pointer group focus:outline-none transition-opacity ${
-              currentSlide === slides.length - 1 ? 'opacity-20 cursor-not-allowed' : 'opacity-100'
-            }`}
-          >
-            <span className="text-xs font-mono tracking-widest text-[var(--color-primary)] group-hover:text-[var(--color-theme)] transition-colors uppercase">
-              Next Slide
-            </span>
-            <div className="w-10 h-10 border border-[var(--color-primary)]/20 flex items-center justify-center group-hover:border-[var(--color-theme)] group-hover:bg-[var(--color-theme)] group-hover:text-white transition-all duration-300 rounded-none text-[var(--color-primary)]">
-              <span className="font-mono text-xs group-hover:translate-x-0.5 transition-transform duration-300">→</span>
-            </div>
-          </button>
-        </div>
-
       </div>
     </div>
   );
