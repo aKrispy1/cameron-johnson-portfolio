@@ -6,10 +6,12 @@ import LegendDisplay from '../components/LegendDisplay';
 import LegendDetails from '../components/LegendDetails';
 import CaseStudyView from '../components/CaseStudyView';
 import WavyGrid from '../components/WavyGrid';
+import MobileWorksView from '../components/MobileWorksView';
 
 const Works = () => {
   const [selectedId, setSelectedId] = useState(portfolioLegends[0].id);
   const [showGallery, setShowGallery] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const currentLegend = portfolioLegends.find(l => l.id === selectedId) || portfolioLegends[0];
 
@@ -52,6 +54,26 @@ const Works = () => {
       document.documentElement.style.setProperty('--color-details', '#CCCCCC');
     };
   }, [currentLegend]);
+
+  // Handle resize check for mobile viewport
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <MobileWorksView 
+        selectedId={selectedId}
+        onSelect={handleSelect}
+        legends={portfolioLegends}
+        currentLegend={currentLegend}
+        onNextProject={handleNextCaseStudy}
+      />
+    );
+  }
 
   return (
     <motion.main 
