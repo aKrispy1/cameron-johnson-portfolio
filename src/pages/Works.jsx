@@ -33,6 +33,12 @@ const Works = () => {
     setSelectedId(portfolioLegends[nextIndex].id);
   };
 
+  const handlePrevCaseStudy = () => {
+    const currentIndex = portfolioLegends.findIndex(l => l.id === selectedId);
+    const prevIndex = (currentIndex - 1 + portfolioLegends.length) % portfolioLegends.length;
+    setSelectedId(portfolioLegends[prevIndex].id);
+  };
+
   // Sync theme variables based on selection
   useEffect(() => {
     if (currentLegend) {
@@ -71,6 +77,7 @@ const Works = () => {
         legends={portfolioLegends}
         currentLegend={currentLegend}
         onNextProject={handleNextCaseStudy}
+        onPrevProject={handlePrevCaseStudy}
       />
     );
   }

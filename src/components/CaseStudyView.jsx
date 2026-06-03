@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const getSecondaryContrastColor = (legend) => {
+  const secColor = (legend.secondaryColor || '#ffffff').toLowerCase();
+  if (secColor === '#ffffff' || secColor === '#ffffffff' || secColor === '#faf9fc' || secColor === '#fcfcfc') {
+    return 'text-black';
+  }
+  return 'text-white';
+};
+
 // Interactive sub-gallery for process images inside the slide
 const GallerySubGrid = ({ images }) => {
   const [selectedImage, setSelectedImage] = useState(images[0] || '');
@@ -294,7 +302,7 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
                     {activeSlide.subtitle && (
                       <div className="mb-3">
                         <span className={`inline-block font-mono text-[10px] font-bold px-2 py-1 tracking-wider uppercase ${
-                          isDark ? 'bg-white/10 text-white/90' : 'bg-[var(--color-secondary)] text-[var(--color-primary)]'
+                          isDark ? 'bg-white/10 text-white/90' : `bg-[var(--color-secondary)] ${getSecondaryContrastColor(legend)}`
                         }`}>
                           {activeSlide.subtitle}
                         </span>

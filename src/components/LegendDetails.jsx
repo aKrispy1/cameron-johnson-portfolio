@@ -1,5 +1,13 @@
 import React from 'react';
 
+const getSecondaryContrastColor = (legend) => {
+  const secColor = (legend.secondaryColor || '#ffffff').toLowerCase();
+  if (secColor === '#ffffff' || secColor === '#ffffffff' || secColor === '#faf9fc' || secColor === '#fcfcfc') {
+    return 'text-black';
+  }
+  return 'text-white';
+};
+
 const LegendDetails = ({ legend, onNext, showGallery, onToggleGallery }) => {
   const scope = legend.scope || legend.tags || [];
   const location = legend.location || { name: "SPARTANBURG, SC // USA", lat: "34.9496° N", lon: "81.9320° W" };
@@ -19,7 +27,7 @@ const LegendDetails = ({ legend, onNext, showGallery, onToggleGallery }) => {
         {/* Subtitle Badge */}
         {legend.subtitle && (
           <div className="mb-4">
-            <span className="inline-block bg-[var(--color-secondary)] text-[var(--color-primary)] font-mono text-xs font-bold px-3 py-1.5 tracking-wider uppercase">
+            <span className={`inline-block bg-[var(--color-secondary)] font-mono text-xs font-bold px-3 py-1.5 tracking-wider uppercase ${getSecondaryContrastColor(legend)}`}>
               {legend.subtitle}
             </span>
           </div>
@@ -63,7 +71,7 @@ const LegendDetails = ({ legend, onNext, showGallery, onToggleGallery }) => {
                 key={i} 
                 className="inline-flex items-center border border-[var(--color-primary)]/20 text-sm font-mono tracking-tight uppercase text-[var(--color-primary)]/70 hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)] transition-colors duration-300 overflow-hidden"
               >
-                <span className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-2 py-1.5 font-bold text-xs border-r border-[var(--color-primary)]/20">
+                <span className={`bg-[var(--color-secondary)] px-2 py-1.5 font-bold text-xs border-r border-[var(--color-primary)]/20 ${getSecondaryContrastColor(legend)}`}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span className="px-3 py-1.5">

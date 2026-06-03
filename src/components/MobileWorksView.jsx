@@ -1,6 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const getSecondaryContrastColor = (legend) => {
+  const secColor = (legend.secondaryColor || '#ffffff').toLowerCase();
+  if (secColor === '#ffffff' || secColor === '#ffffffff' || secColor === '#faf9fc' || secColor === '#fcfcfc') {
+    return 'text-black';
+  }
+  return 'text-white';
+};
+
+const getThemeContrastColor = (themeColor) => {
+  const color = (themeColor || '').toLowerCase();
+  if (color === '#c70629ff' || color === '#61289aff' || color === '#61289a') {
+    return 'text-white';
+  }
+  return 'text-black';
+};
+
 const MobileGallerySubGrid = ({ images }) => {
   const [selectedImage, setSelectedImage] = useState(images[0] || '');
 
@@ -15,7 +31,7 @@ const MobileGallerySubGrid = ({ images }) => {
   return (
     <div className="w-full h-full flex flex-col justify-between p-1.5 overflow-hidden">
       {/* Mini Preview Box */}
-      <div className="flex-1 flex items-center justify-center bg-black/10 p-1 relative overflow-hidden h-[120px]">
+      <div className="flex-1 flex items-center justify-center bg-black/10 p-1 relative overflow-hidden h-[150px]">
         <img 
           src={selectedImage} 
           alt="Process exploration preview" 
@@ -41,7 +57,7 @@ const MobileGallerySubGrid = ({ images }) => {
   );
 };
 
-const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextProject }) => {
+const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextProject, onPrevProject }) => {
   const caseStudy = currentLegend.caseStudy || {};
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -226,23 +242,24 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
         })}
       </div>
 
-      {/* 2. Gallery Block Flanked by left/right arrows */}
-      <div className="flex items-center justify-between w-full h-[220px] max-h-[30vh] gap-3 flex-shrink-0 my-3">
-        {/* Left Arrow Button */}
+      {/* 2. Gallery Block (Expanded width with absolutely-floated arrows and indicators) */}
+      <div className="w-full h-[260px] max-h-[32vh] relative flex-shrink-0 my-2.5 shadow-md border border-[var(--color-primary)]/15 overflow-hidden bg-black/35">
+        
+        {/* Left Floating Arrow */}
         <button 
           onClick={prevSlide}
           disabled={currentSlide === 0}
-          className={`w-9 h-14 border border-[var(--color-primary)]/20 flex items-center justify-center font-mono text-base bg-white/5 active:bg-[var(--color-theme)] active:text-white rounded-none cursor-pointer focus:outline-none transition-all ${
-            currentSlide === 0 ? 'opacity-10 cursor-not-allowed border-transparent bg-transparent' : 'opacity-100 border-[var(--color-primary)]/30'
+          className={`absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-12 border border-white/20 bg-black/40 backdrop-blur-xs text-white flex items-center justify-center font-mono text-base rounded-none cursor-pointer focus:outline-none transition-all active:bg-[var(--color-theme)] active:text-black ${
+            currentSlide === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         >
           ←
         </button>
 
-        {/* Media Box Frame */}
-        <div className="flex-1 h-full border border-[var(--color-primary)]/15 bg-black/30 relative flex items-center justify-center overflow-hidden rounded-none shadow-md">
-          <span className="absolute top-1.5 left-2 font-mono text-[7px] text-white/30">[SLIDE.ASSET]</span>
-          <span className="absolute bottom-1.5 right-2 font-mono text-[7px] text-white/30">SYSTEM // CJV4_SYS</span>
+        {/* Media Frame wrapper */}
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="absolute top-1.5 left-2 font-mono text-[7px] text-white/30 z-10">[SLIDE.ASSET]</span>
+          <span className="absolute bottom-1.5 right-2 font-mono text-[7px] text-white/30 z-10">SYSTEM // CJV4_SYS</span>
           <AnimatePresence mode="wait">
             <motion.div
               key={`${currentLegend.id}-slide-${currentSlide}`}
@@ -257,57 +274,51 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
           </AnimatePresence>
         </div>
 
-        {/* Right Arrow Button */}
+        {/* Right Floating Arrow */}
         <button 
           onClick={nextSlide}
           disabled={currentSlide === slides.length - 1}
-          className={`w-9 h-14 border border-[var(--color-primary)]/20 flex items-center justify-center font-mono text-base bg-white/5 active:bg-[var(--color-theme)] active:text-white rounded-none cursor-pointer focus:outline-none transition-all ${
-            currentSlide === slides.length - 1 ? 'opacity-10 cursor-not-allowed border-transparent bg-transparent' : 'opacity-100 border-[var(--color-primary)]/30'
+          className={`absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-12 border border-white/20 bg-black/40 backdrop-blur-xs text-white flex items-center justify-center font-mono text-base rounded-none cursor-pointer focus:outline-none transition-all active:bg-[var(--color-theme)] active:text-black ${
+            currentSlide === slides.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         >
           →
         </button>
+
+        {/* Floating Timeline dots indicators */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 justify-center bg-black/25 px-2 py-0.5 border border-white/5 rounded-none backdrop-blur-xs">
+          {slides.map((_, idx) => (
+            <button 
+              key={idx}
+              onClick={() => setCurrentSlide(idx)}
+              className={`h-1.5 transition-all duration-300 cursor-pointer rounded-none ${
+                idx === currentSlide 
+                  ? 'w-7 bg-[var(--color-theme)]' 
+                  : 'w-2 bg-white/40'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* 3. Slider dots / Timeline progress indicators */}
-      <div className="flex gap-1.5 justify-center flex-shrink-0 mb-3">
-        {slides.map((_, idx) => (
-          <button 
-            key={idx}
-            onClick={() => setCurrentSlide(idx)}
-            className={`h-1.5 transition-all duration-300 cursor-pointer rounded-none ${
-              idx === currentSlide 
-                ? 'w-7 bg-[var(--color-theme)]' 
-                : 'w-2 bg-[var(--color-primary)]/15'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* 4. Project description details sitting below the gallery */}
+      {/* 3. Project description details sitting below the gallery */}
       <div className="flex flex-col gap-2.5 flex-grow justify-between overflow-hidden">
         
-        {/* Row 1: Dossier telemetry label & Next project Orange Button */}
-        <div className="flex justify-between items-center flex-shrink-0">
+        {/* Row 1: Dossier telemetry label */}
+        <div className="flex justify-between items-center flex-shrink-0 mt-0.5">
           <span className="font-mono text-[10px] text-[var(--color-primary)]/40 tracking-wider uppercase">
             Creative Dossier
           </span>
-          <button 
-            onClick={onNextProject}
-            className="bg-[#e58031] text-black border border-black font-mono text-[10px] px-3 py-1 uppercase font-bold tracking-wider hover:bg-[#e58031]/80 select-none rounded-none cursor-pointer focus:outline-none transition-colors"
-          >
-            Next Project &gt;
-          </button>
         </div>
 
-        {/* Row 2: Capabilities Tags */}
+        {/* Row 2: Capabilities Tags with contrast-safe index formatting */}
         <div className="flex flex-wrap gap-1.5 flex-shrink-0 max-h-[32px] overflow-hidden">
           {currentLegend.scope && currentLegend.scope.map((tag, i) => (
             <span 
               key={i}
               className="inline-flex items-center border border-[var(--color-primary)]/20 font-mono text-[8px] uppercase text-[var(--color-primary)]/70 bg-black/5"
             >
-              <span className="bg-[var(--color-secondary)] text-white px-1 py-0.5 font-bold border-r border-[var(--color-primary)]/20">
+              <span className={`bg-[var(--color-secondary)] px-1 py-0.5 font-bold border-r border-[var(--color-primary)]/20 ${getSecondaryContrastColor(currentLegend)}`}>
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="px-1.5 py-0.5 font-sans font-bold">
@@ -317,28 +328,47 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
           ))}
         </div>
 
-        {/* Row 3: Blue Banner block */}
+        {/* Row 3: Subtitle Banner block with contrast-safe style formatting */}
         <div className="flex-shrink-0">
-          <span className="inline-block bg-[var(--color-secondary)] text-white font-mono text-[10px] font-bold px-3 py-1 uppercase tracking-widest rounded-none border border-[var(--color-primary)]/10">
+          <span className={`inline-block bg-[var(--color-secondary)] font-mono text-[9px] font-bold px-3 py-1 uppercase tracking-widest rounded-none border border-[var(--color-primary)]/10 ${getSecondaryContrastColor(currentLegend)}`}>
             {activeSlide.subtitle || currentLegend.subtitle}
           </span>
         </div>
 
         {/* Row 4: Big Bold Title */}
         <div className="flex-shrink-0">
-          <h1 className="text-2xl lg:text-3xl font-display font-bold uppercase tracking-tight text-[var(--color-primary)] leading-none my-0.5">
+          <h1 className="text-2xl font-display font-bold uppercase tracking-tight text-[var(--color-primary)] leading-none my-0.5">
             {activeSlide.title || currentLegend.title}
           </h1>
         </div>
 
         {/* Row 5: Text Narrative paragraph (Safe-scrollable if exceeds layout bounds) */}
-        <div className="flex-1 overflow-hidden min-h-[70px] pb-2">
-          <p className="font-sans text-[13px] text-[var(--color-primary)]/85 leading-relaxed overflow-y-auto max-h-[16vh] pr-1.5 custom-scrollbar">
+        <div className="flex-1 overflow-hidden min-h-[50px] max-h-[14vh]">
+          <p className="font-sans text-[13px] text-[var(--color-primary)]/85 leading-relaxed overflow-y-auto max-h-full pr-1.5 custom-scrollbar">
             {activeSlide.content}
           </p>
         </div>
 
       </div>
+
+      {/* 4. Footer Project Cycle Buttons (Side-by-side at the very bottom) */}
+      <div className="flex gap-3 mt-2 pb-2 flex-shrink-0">
+        <button 
+          onClick={onPrevProject}
+          className="flex-1 py-2.5 font-mono text-xs font-bold uppercase tracking-wider bg-[#19132d] text-white border border-[var(--color-primary)]/20 active:bg-[#19132d]/85 rounded-none cursor-pointer focus:outline-none transition-colors"
+        >
+          &lt; Prev Project
+        </button>
+        <button 
+          onClick={onNextProject}
+          className={`flex-1 py-2.5 font-mono text-xs font-bold uppercase tracking-wider bg-[var(--color-theme)] border border-[var(--color-primary)]/20 active:opacity-90 rounded-none cursor-pointer focus:outline-none transition-all ${
+            getThemeContrastColor(currentLegend.themeColor)
+          }`}
+        >
+          Next Project &gt;
+        </button>
+      </div>
+
     </div>
   );
 };
