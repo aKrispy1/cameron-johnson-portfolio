@@ -152,6 +152,18 @@ const CaseStudyView = ({ legend, onClose }) => {
     setTouchEnd(0);
   };
 
+  const nextSlide = () => {
+    if (currentSlide < slides.length - 1) {
+      setCurrentSlide((prev) => prev + 1);
+    }
+  };
+
+  const prevSlide = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide((prev) => prev - 1);
+    }
+  };
+
   // Keyboard navigation helpers
   useEffect(() => {
     const handleKeyDown = (e) => {
