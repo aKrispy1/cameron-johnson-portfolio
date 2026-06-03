@@ -242,8 +242,15 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
         })}
       </div>
 
+      {/* Subtitle Banner block moved here, sitting just over the gallery section */}
+      <div className="flex-shrink-0 mt-2 mb-0.5 flex justify-start">
+        <span className={`inline-block bg-[var(--color-secondary)] font-mono text-[9px] font-bold px-3 py-1 uppercase tracking-widest rounded-none border border-[var(--color-primary)]/10 ${getSecondaryContrastColor(currentLegend)}`}>
+          {activeSlide.subtitle || currentLegend.subtitle}
+        </span>
+      </div>
+
       {/* 2. Gallery Block (Expanded width with absolutely-floated arrows and indicators) */}
-      <div className="w-full h-[260px] max-h-[32vh] relative flex-shrink-0 my-2.5 shadow-md border border-[var(--color-primary)]/15 overflow-hidden bg-black/35">
+      <div className="w-full h-[260px] max-h-[32vh] relative flex-shrink-0 my-2 shadow-md border border-[var(--color-primary)]/15 overflow-hidden bg-black/35">
         
         {/* Left Floating Arrow */}
         <button 
@@ -302,17 +309,24 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
       </div>
 
       {/* 3. Project description details sitting below the gallery */}
-      <div className="flex flex-col gap-2.5 flex-grow justify-between overflow-hidden">
+      <div className="flex flex-col gap-1.5 flex-grow justify-start overflow-hidden">
         
-        {/* Row 1: Dossier telemetry label */}
+        {/* Row 1: Big Bold Title */}
+        <div className="flex-shrink-0">
+          <h1 className="text-2xl font-display font-bold uppercase tracking-tight text-[var(--color-primary)] leading-none my-0.5">
+            {activeSlide.title || currentLegend.title}
+          </h1>
+        </div>
+
+        {/* Row 2: Dossier telemetry label as a subtitle underneath the project name */}
         <div className="flex justify-between items-center flex-shrink-0 mt-0.5">
-          <span className="font-mono text-[10px] text-[var(--color-primary)]/40 tracking-wider uppercase">
+          <span className="font-mono text-[9px] text-[var(--color-primary)]/40 tracking-wider uppercase">
             Creative Dossier
           </span>
         </div>
 
-        {/* Row 2: Capabilities Tags with contrast-safe index formatting */}
-        <div className="flex flex-wrap gap-1.5 flex-shrink-0 max-h-[32px] overflow-hidden">
+        {/* Row 3: Capabilities Tags with contrast-safe index formatting */}
+        <div className="flex flex-wrap gap-1.5 flex-shrink-0 max-h-[32px] overflow-hidden mt-0.5">
           {currentLegend.scope && currentLegend.scope.map((tag, i) => (
             <span 
               key={i}
@@ -328,22 +342,8 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
           ))}
         </div>
 
-        {/* Row 3: Subtitle Banner block with contrast-safe style formatting */}
-        <div className="flex-shrink-0">
-          <span className={`inline-block bg-[var(--color-secondary)] font-mono text-[9px] font-bold px-3 py-1 uppercase tracking-widest rounded-none border border-[var(--color-primary)]/10 ${getSecondaryContrastColor(currentLegend)}`}>
-            {activeSlide.subtitle || currentLegend.subtitle}
-          </span>
-        </div>
-
-        {/* Row 4: Big Bold Title */}
-        <div className="flex-shrink-0">
-          <h1 className="text-2xl font-display font-bold uppercase tracking-tight text-[var(--color-primary)] leading-none my-0.5">
-            {activeSlide.title || currentLegend.title}
-          </h1>
-        </div>
-
-        {/* Row 5: Text Narrative paragraph (Safe-scrollable if exceeds layout bounds) */}
-        <div className="flex-1 overflow-hidden min-h-[50px] max-h-[14vh]">
+        {/* Row 4: Text Narrative paragraph (Safe-scrollable if exceeds layout bounds) */}
+        <div className="flex-1 overflow-hidden min-h-[50px] mt-1.5">
           <p className="font-sans text-[13px] text-[var(--color-primary)]/85 leading-relaxed overflow-y-auto max-h-full pr-1.5 custom-scrollbar">
             {activeSlide.content}
           </p>
