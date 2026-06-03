@@ -70,7 +70,7 @@ const Works = () => {
         
         {/* Center Pane - Graphic Display */}
         {showGallery ? (
-          <CaseStudyView legend={currentLegend} />
+          <CaseStudyView legend={currentLegend} onClose={() => setShowGallery(false)} />
         ) : (
           <LegendDisplay legend={currentLegend} />
         )}
