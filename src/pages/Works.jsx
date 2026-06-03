@@ -76,12 +76,14 @@ const Works = () => {
         )}
 
         {/* Right Pane - Details sheet */}
-        <LegendDetails 
-          legend={currentLegend} 
-          onNext={handleNext} 
-          showGallery={showGallery}
-          onToggleGallery={() => setShowGallery(!showGallery)}
-        />
+        {!showGallery && (
+          <LegendDetails 
+            legend={currentLegend} 
+            onNext={handleNext} 
+            showGallery={showGallery}
+            onToggleGallery={() => setShowGallery(!showGallery)}
+          />
+        )}
         
       </div>
     </motion.main>
