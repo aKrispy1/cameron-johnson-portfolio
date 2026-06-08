@@ -40,4 +40,10 @@ const localCMSPlugin = () => ({
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tailwindcss(), react(), localCMSPlugin()],
+  resolve: {
+    alias: {
+      "@": path.resolve(process.cwd(), "./src"),
+    },
+  },
 })
+
