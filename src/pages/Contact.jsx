@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import WavyGrid from '../components/WavyGrid';
+import WavyGridCanvas from '../components/WavyGridCanvas';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -9,17 +9,41 @@ const Contact = () => {
     subject: '',
     message: ''
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [isTransmitting, setIsTransmitting] = useState(false);
+  const [transmissionLogs, setTransmissionLogs] = useState([]);
+  const [transmissionSuccess, setTransmissionSuccess] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.name && formData.email && formData.message) {
-      setSubmitted(true);
-      // Simulate form submission
-      setTimeout(() => {
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setSubmitted(false);
-      }, 3000);
+      setIsTransmitting(true);
+      setTransmissionLogs([]);
+      setTransmissionSuccess(false);
+
+      const logsList = [
+        '[CONNECTING] Initiating encrypted handshake with SMTP gateways...',
+        '[RESOLVED] Handshake secure: TLS_AES_256_GCM_SHA384 active.',
+        '[COMPILING] Packaging narrative parameters and coordinates...',
+        `[ENCRYPT] Payload encrypted. Size: ${(JSON.stringify(formData).length / 1024).toFixed(2)} KB`,
+        '[TRANSMIT] Dispatching packets to camjcreative@gmail.com [██████████████] 100%',
+        `[VERIFIED] Secure receipt logged. ID: CJ-${Math.floor(Math.random() * 90000 + 10000)}`
+      ];
+
+      let idx = 0;
+      const logInterval = setInterval(() => {
+        if (idx < logsList.length) {
+          setTransmissionLogs(prev => [...prev, logsList[idx]]);
+          idx++;
+        } else {
+          clearInterval(logInterval);
+          setTimeout(() => {
+            setIsTransmitting(false);
+            setTransmissionSuccess(true);
+            setFormData({ name: '', email: '', subject: '', message: '' });
+          }, 800);
+        }
+      }, 350);
     }
   };
 
@@ -32,7 +56,7 @@ const Contact = () => {
       className="w-full min-h-screen pt-28 lg:pt-36 px-6 lg:px-16 pb-24 bg-[var(--color-background)] transition-colors duration-700 select-none overflow-x-hidden relative"
     >
       <div className="ebbing-gradient" />
-      <WavyGrid />
+      <WavyGridCanvas />
 
       <div className="max-w-6xl mx-auto relative z-10">
         
@@ -53,86 +77,158 @@ const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Left panel: Contact Form */}
-          <div className="lg:col-span-8 border border-[var(--color-primary)]/10 bg-[var(--color-panel)] p-8 lg:p-12 relative flex flex-col justify-between">
+          <div className="lg:col-span-8 border border-[var(--color-primary)]/10 bg-[var(--color-panel)] p-8 lg:p-12 relative flex flex-col justify-between min-h-[520px] hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br shadow-sm">
             <span className="absolute top-3 left-4 font-mono text-[9px] text-[var(--color-primary)]/30">[INTAKE.FORM]</span>
-            <span className="absolute top-3 right-4 font-mono text-[9px] text-[var(--color-theme)] font-bold">STATUS: READY</span>
+            <span className="absolute top-3 right-4 font-mono text-[9px] text-[var(--color-theme)] font-bold">
+              STATUS: {isTransmitting ? 'TRANSMITTING' : transmissionSuccess ? 'DISPATCH_OK' : 'READY'}
+            </span>
 
-            <form onSubmit={handleSubmit} className="pt-6 flex flex-col gap-6">
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Name */}
+            {isTransmitting ? (
+              /* Monospace Transmission Terminal Console */
+              <div className="flex-grow flex flex-col justify-between pt-8 font-mono text-xs text-[var(--color-primary)]/80">
+                <div className="flex flex-col gap-3">
+                  <span className="text-[var(--color-theme)] font-bold animate-[pulse_1s_infinite]">
+                    &gt;_ SYSTEM_UPLINK: ENCRYPTED DISPATCH RUNNING
+                  </span>
+                  <div className="flex flex-col gap-2 mt-4 text-[var(--color-primary)]/75">
+                    {transmissionLogs.map((log, idx) => (
+                      <motion.div 
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        &gt;_ {log}
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+                <div className="border-t border-[var(--color-primary)]/10 pt-6 flex justify-between items-center text-[var(--color-primary)]/40 text-[9px] mt-8">
+                  <span>SATELLITE DOWNLINK: STANDBY...</span>
+                  <span className="animate-pulse">●</span>
+                </div>
+              </div>
+            ) : transmissionSuccess ? (
+              /* Success Screen */
+              <div className="flex-grow flex flex-col justify-between pt-8 font-mono text-xs text-[var(--color-primary)]/80">
+                <div className="flex-grow flex flex-col items-center justify-center gap-6 py-8">
+                  {/* Glowing success badge */}
+                  <div className="w-16 h-16 border border-[var(--color-secondary)] bg-[var(--color-secondary)]/10 flex items-center justify-center text-[var(--color-secondary)] text-3xl font-bold relative animate-[pulse_2s_infinite]">
+                    ✓
+                  </div>
+                  <div className="text-center max-w-sm">
+                    <h3 className="text-base font-display font-bold text-[var(--color-primary)] uppercase tracking-[0.2em] mb-2">
+                      TRANSMISSION COMPLETED
+                    </h3>
+                    <p className="font-sans text-xs sm:text-sm text-[var(--color-primary)]/70 leading-relaxed">
+                      Your dossier data has been encrypted and received. Cameron's communication modules will ingest the variables and establish contact shortly.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border-t border-[var(--color-primary)]/10 pt-6 flex justify-between items-center mt-6">
+                  <span className="text-[var(--color-primary)]/40 text-[9px]">UPLINK_CODE: 200 // VERIFIED</span>
+                  <button 
+                    onClick={() => setTransmissionSuccess(false)}
+                    data-cursor="explore"
+                    className="px-6 py-2 border border-[var(--color-primary)]/20 hover:border-[var(--color-theme)] bg-transparent font-mono text-[9px] uppercase tracking-widest text-[var(--color-primary)]/80 hover:text-[var(--color-theme)] transition-colors duration-300 rounded-none cursor-pointer focus:outline-none"
+                  >
+                    [ DISPATCH ANOTHER ]
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Normal Form */
+              <form onSubmit={handleSubmit} className="pt-6 flex flex-col gap-6">
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Name */}
+                  <div>
+                    <label className="font-mono text-[10px] text-[var(--color-primary)]/40 uppercase mb-2 block tracking-wider">
+                      [01] SENDER NAME * {focusedField === 'name' ? ' // [STATE: TYPING]' : ''}
+                    </label>
+                    <input 
+                      type="text" 
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      onFocus={() => setFocusedField('name')}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="Enter name"
+                      data-cursor="input"
+                      className="w-full bg-[var(--color-background)]/40 border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none" 
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="font-mono text-[10px] text-[var(--color-primary)]/40 uppercase mb-2 block tracking-wider">
+                      [02] SENDER EMAIL * {focusedField === 'email' ? ' // [STATE: TYPING]' : ''}
+                    </label>
+                    <input 
+                      type="email" 
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="Enter email address"
+                      data-cursor="input"
+                      className="w-full bg-[var(--color-background)]/40 border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none" 
+                    />
+                  </div>
+                </div>
+
+                {/* Subject */}
                 <div>
                   <label className="font-mono text-[10px] text-[var(--color-primary)]/40 uppercase mb-2 block tracking-wider">
-                    [01] SENDER NAME *
+                    [03] CLASSIFICATION / SUBJECT {focusedField === 'subject' ? ' // [STATE: TYPING]' : ''}
                   </label>
                   <input 
                     type="text" 
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="Enter name"
-                    className="w-full bg-[var(--color-background)] border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none" 
+                    value={formData.subject}
+                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                    onFocus={() => setFocusedField('subject')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="Brand identity, System architecture, etc."
+                    data-cursor="input"
+                    className="w-full bg-[var(--color-background)]/40 border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none" 
                   />
                 </div>
 
-                {/* Email */}
+                {/* Message */}
                 <div>
                   <label className="font-mono text-[10px] text-[var(--color-primary)]/40 uppercase mb-2 block tracking-wider">
-                    [02] SENDER EMAIL *
+                    [04] DOSSIER NOTES / INQUIRY DETAILS * {focusedField === 'message' ? ' // [STATE: TYPING]' : ''}
                   </label>
-                  <input 
-                    type="email" 
+                  <textarea 
                     required
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    placeholder="Enter email address"
-                    className="w-full bg-[var(--color-background)] border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none" 
+                    rows={5}
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                    onFocus={() => setFocusedField('message')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="Outline the parameters of your project."
+                    data-cursor="input"
+                    className="w-full bg-[var(--color-background)]/40 border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none resize-none" 
                   />
                 </div>
-              </div>
 
-              {/* Subject */}
-              <div>
-                <label className="font-mono text-[10px] text-[var(--color-primary)]/40 uppercase mb-2 block tracking-wider">
-                  [03] CLASSIFICATION / SUBJECT
-                </label>
-                <input 
-                  type="text" 
-                  value={formData.subject}
-                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                  placeholder="Brand identity, System architecture, etc."
-                  className="w-full bg-[var(--color-background)] border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none" 
-                />
-              </div>
+                {/* Action Button */}
+                <div className="pt-4 flex items-center justify-between">
+                  <span className="font-mono text-[9px] text-[var(--color-primary)]/30">* REQUIRED PARAMETERS</span>
+                  
+                  <button 
+                    type="submit"
+                    data-cursor="explore"
+                    className="px-8 py-4 border border-[var(--color-primary)]/30 bg-transparent text-[var(--color-primary)] font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer rounded-none hover:border-[var(--color-secondary)] hover:bg-[var(--color-secondary)]/10 hover:text-[var(--color-primary)] focus:outline-none glow-border"
+                  >
+                    TRANSMIT MESSAGE
+                  </button>
+                </div>
 
-              {/* Message */}
-              <div>
-                <label className="font-mono text-[10px] text-[var(--color-primary)]/40 uppercase mb-2 block tracking-wider">
-                  [04] DOSSIER NOTES / INQUIRY DETAILS *
-                </label>
-                <textarea 
-                  required
-                  rows={5}
-                  value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  placeholder="Outline the parameters of your project."
-                  className="w-full bg-[var(--color-background)] border border-[var(--color-primary)]/10 focus:border-[var(--color-theme)] p-4 font-sans text-base text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30 focus:outline-none transition-colors rounded-none resize-none" 
-                />
-              </div>
-
-              {/* Action Button */}
-              <div className="pt-4 flex items-center justify-between">
-                <span className="font-mono text-[9px] text-[var(--color-primary)]/30">* REQUIRED PARAMETERS</span>
-                
-                <button 
-                  type="submit"
-                  className="px-8 py-4 border border-[var(--color-primary)]/30 bg-transparent text-[var(--color-primary)] font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer rounded-none hover:border-[var(--color-secondary)] hover:bg-[var(--color-secondary)]/10 hover:text-[var(--color-primary)] focus:outline-none"
-                >
-                  {submitted ? 'TRANSMITTING...' : 'TRANSMIT MESSAGE'}
-                </button>
-              </div>
-
-            </form>
+              </form>
+            )}
           </div>
 
           {/* Right panel: Dossier Coordinates & Social Links */}

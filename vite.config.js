@@ -16,7 +16,7 @@ const localCMSPlugin = () => ({
           try {
             const parsedData = JSON.parse(body);
             // Physically stringify the exact react structure back to the source codebase
-            const fileContent = `export const legends = ${JSON.stringify(parsedData, null, 2)};\n\nexport const siteConfig = {\n  primaryBrand: legends[0],\n};\n\nexport const portfolioLegends = legends.slice(1);\n`;
+            const fileContent = `export const legends = ${JSON.stringify(parsedData, null, 2)};\n\nexport const siteConfig = {\n  primaryBrand: legends[0],\n};\n\nexport const portfolioLegends = [\n  legends[2],\n  legends[3],\n  legends[4],\n  legends[5],\n  legends[6],\n  legends[7],\n  legends[0]\n];\n`;
             
             // We write straight to src/data/legends.js
             fs.writeFileSync(path.resolve(process.cwd(), 'src/data/legends.js'), fileContent);

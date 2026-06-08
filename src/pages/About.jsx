@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import WavyGridCanvas from '../components/WavyGridCanvas';
+import CapabilitiesRadar from '../components/CapabilitiesRadar';
 
 // Facets of identity for the carousel
 const identityFacets = [
@@ -73,6 +75,7 @@ const About = () => {
       className="w-full min-h-screen pt-28 lg:pt-36 px-6 lg:px-16 pb-24 bg-[var(--color-background)] transition-colors duration-700 select-none overflow-x-hidden relative"
     >
       <div className="ebbing-gradient" />
+      <WavyGridCanvas />
       
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Page Header */}
@@ -131,7 +134,7 @@ const About = () => {
             </div>
 
             {/* Right part: Detail Display card */}
-            <div className="lg:col-span-7 border border-[var(--color-primary)]/10 bg-[var(--color-panel)] p-8 flex flex-col justify-between relative overflow-hidden">
+            <div className="lg:col-span-7 border border-[var(--color-primary)]/10 bg-[var(--color-panel)] p-8 flex flex-col justify-between relative overflow-hidden hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br shadow-sm">
               <span className="absolute top-3 left-4 font-mono text-[9px] text-[var(--color-primary)]/30">[FACET.DOSSIER]</span>
               <span className="absolute top-3 right-4 font-mono text-[9px] text-[var(--color-theme)] font-bold">ACTIVE</span>
 
@@ -142,17 +145,22 @@ const About = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className="pt-6"
+                  className="pt-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
                 >
-                  <span className="font-mono text-xs text-[var(--color-theme)] tracking-widest block mb-1">
-                    {activeFacet.subtitle}
-                  </span>
-                  <h3 className="text-2xl font-display font-bold tracking-tight text-[var(--color-primary)] mb-4 uppercase">
-                    {activeFacet.title}
-                  </h3>
-                  <p className="font-sans text-base text-[var(--color-primary)]/80 leading-relaxed max-w-xl">
-                    {activeFacet.description}
-                  </p>
+                  <div className="md:col-span-7 flex flex-col justify-center">
+                    <span className="font-mono text-xs text-[var(--color-theme)] tracking-widest block mb-1 font-bold">
+                      {activeFacet.subtitle}
+                    </span>
+                    <h3 className="text-2xl font-display font-bold tracking-tight text-[var(--color-primary)] mb-4 uppercase">
+                      {activeFacet.title}
+                    </h3>
+                    <p className="font-sans text-sm lg:text-base text-[var(--color-primary)]/85 leading-relaxed">
+                      {activeFacet.description}
+                    </p>
+                  </div>
+                  <div className="md:col-span-5 flex justify-center w-full">
+                    <CapabilitiesRadar activeFacetId={activeFacetId} />
+                  </div>
                 </motion.div>
               </AnimatePresence>
 
@@ -178,7 +186,8 @@ const About = () => {
             <div className="border-b border-[var(--color-primary)]/10">
               <button 
                 onClick={() => toggleSection('bio')}
-                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
+                data-cursor="explore"
+                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <span className="font-mono text-xs text-[var(--color-theme)]">[01]</span>
@@ -221,7 +230,8 @@ const About = () => {
             <div className="border-b border-[var(--color-primary)]/10">
               <button 
                 onClick={() => toggleSection('phil')}
-                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
+                data-cursor="explore"
+                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <span className="font-mono text-xs text-[var(--color-theme)]">[02]</span>
@@ -263,7 +273,8 @@ const About = () => {
             <div className="border-b border-[var(--color-primary)]/10">
               <button 
                 onClick={() => toggleSection('rec')}
-                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
+                data-cursor="explore"
+                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <span className="font-mono text-xs text-[var(--color-theme)]">[03]</span>
@@ -324,7 +335,8 @@ const About = () => {
             <div className="border-b border-[var(--color-primary)]/10">
               <button 
                 onClick={() => toggleSection('obj')}
-                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
+                data-cursor="explore"
+                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <span className="font-mono text-xs text-[var(--color-theme)]">[04]</span>

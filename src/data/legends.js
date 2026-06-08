@@ -76,7 +76,7 @@ export const legends = [
       challengeMedia: "/assets/projects/STP_Eplist.png",
       approachMedia: "/assets/projects/STP_podpage.png",
       outcomeMedia: "/assets/projects/STP_Desktop.png",
-      galleryMedia: ["/assets/projects/STP_Sidebar.png", "/assets/projects/NEW_%23g134895.png"]
+      galleryMedia: ["/assets/projects/STP_Sidebar.png", "/assets/projects/NEW__g134895.png"]
     },
     gallery: ["/assets/projects/STP_Desktop.png", "/assets/projects/STP_Eplist.png", "/assets/projects/STP_podpage.png", "/assets/projects/STP_Sidebar.png"]
   },
@@ -100,22 +100,22 @@ export const legends = [
       challenge: "The core motivation was to fix the static, unathletic feel of the current official logo—which arguably reads more like a turkey than a fierce sports mascot. The challenge was to reimagine the pelican into a genuine sports emblem with real momentum. I wanted to design a mark that screamed basketball talent and was something fans would actually be excited to wear.",
       approach: "To respect the existing fanbase, I retained the original color palette (bold red, navy, and gold) and the general feel of the previous identity. Before sketching, I conducted deep research—including reading the team's 240-page media guide—to thoroughly understand the brand's foundation and identify exactly where it could be modernized. This structural understanding allowed me to push the illustration toward a more aggressive, athletic silhouette without completely alienating the franchise's established roots.",
       outcome: "While the project had a quiet reception on social media, it successfully resonated with peers, becoming a favorite even among non-Pelicans fans. It served as a valuable exercise in conceptual sports branding. If I were to revisit this piece, I would tighten up the line work, introduce a motion design component, and build out a deeper visual world by designing full jersey sets and promotional mockups.",
-      challengeMedia: "/assets/projects/Flying pelicans2_%23g1259.png",
-      approachMedia: "/assets/projects/Flying pelicans2_%23g1172.png",
-      outcomeMedia: "/assets/projects/Flying pelicans2_%23g1239.png",
+      challengeMedia: "/assets/projects/Flying pelicans2__g1259.png",
+      approachMedia: "/assets/projects/Flying pelicans2__g1172.png",
+      outcomeMedia: "/assets/projects/Flying pelicans2__g1239.png",
       galleryMedia: [
-        "/assets/projects/Flying pelicans2_%23g1395.png",
-        "/assets/projects/Flying pelicans2_%23g1432.png",
-        "/assets/projects/Flying pelicans2_%23g1448.png",
-        "/assets/projects/Flying pelicans2_%23g1084.png",
-        "/assets/projects/Flying pelicans2_%23g1098.png",
-        "/assets/projects/Flying pelicans2_%23g1197.png"
+        "/assets/projects/Flying pelicans2__g1395.png",
+        "/assets/projects/Flying pelicans2__g1432.png",
+        "/assets/projects/Flying pelicans2__g1448.png",
+        "/assets/projects/Flying pelicans2__g1084.png",
+        "/assets/projects/Flying pelicans2__g1098.png",
+        "/assets/projects/Flying pelicans2__g1197.png"
       ]
     },
     gallery: [
-      "/assets/projects/Flying pelicans2_%23g1259.png",
-      "/assets/projects/Flying pelicans2_%23g1239.png",
-      "/assets/projects/Flying pelicans2_%23g1197.png"
+      "/assets/projects/Flying pelicans2__g1259.png",
+      "/assets/projects/Flying pelicans2__g1239.png",
+      "/assets/projects/Flying pelicans2__g1197.png"
     ]
   },
   {

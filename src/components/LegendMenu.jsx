@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LegendMenu = ({ selectedId, onSelect, legends, showGallery }) => {
+const LegendMenu = ({ selectedId, onSelect, legends, showGallery, viewMode = 'dossier', onViewModeChange }) => {
   // Helper to split title into up to two lines
   const splitTitle = (title) => {
     const parts = title.split(' ');
@@ -20,13 +20,35 @@ const LegendMenu = ({ selectedId, onSelect, legends, showGallery }) => {
         `}</style>
         
         <div className="mb-8">
-          <span className="font-mono text-sm tracking-widest text-[var(--color-primary)]/40 uppercase block mb-1">PROJECT DIRECTORY</span>
-          <h2 className="text-4xl font-display font-bold tracking-tighter text-[var(--color-primary)] uppercase">
+          <span className="font-mono text-[9px] tracking-widest text-[var(--color-primary)]/40 uppercase block mb-1">PROJECT DIRECTORY</span>
+          <h2 className="text-3xl font-display font-bold tracking-tighter text-[var(--color-primary)] uppercase">
             LEGENDS
           </h2>
-          <span className="font-mono text-xs text-[var(--color-theme)]/70 uppercase block mt-2 tracking-wider">
-            [ SELECT CASE STUDY ]
-          </span>
+          {/* Workstation view mode selectors */}
+          <div className="flex gap-2 mt-3 font-mono text-[9px]">
+            <button 
+              onClick={() => onViewModeChange && onViewModeChange('dossier')}
+              data-cursor="explore"
+              className={`px-3 py-1.5 border transition-all duration-300 rounded-none cursor-pointer ${
+                viewMode === 'dossier' 
+                  ? 'border-[var(--color-theme)] bg-[var(--color-theme)]/15 text-[var(--color-primary)] font-bold' 
+                  : 'border-[var(--color-primary)]/10 text-[var(--color-primary)]/50 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/30'
+              }`}
+            >
+              [ WORKBENCH ]
+            </button>
+            <button 
+              onClick={() => onViewModeChange && onViewModeChange('grid')}
+              data-cursor="explore"
+              className={`px-3 py-1.5 border transition-all duration-300 rounded-none cursor-pointer ${
+                viewMode === 'grid' 
+                  ? 'border-[var(--color-theme)] bg-[var(--color-theme)]/15 text-[var(--color-primary)] font-bold' 
+                  : 'border-[var(--color-primary)]/10 text-[var(--color-primary)]/50 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/30'
+              }`}
+            >
+              [ ARCHIVE_GRID ]
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col border-t border-[var(--color-primary)]/10">

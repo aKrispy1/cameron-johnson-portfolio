@@ -45,7 +45,8 @@ const GallerySubGrid = ({ images }) => {
           <div 
             key={idx}
             onClick={() => setSelectedImage(img)}
-            className={`w-12 h-12 border cursor-pointer flex-shrink-0 p-1 bg-black/30 backdrop-blur-xs transition-all duration-200 ${
+            data-cursor="view"
+            className={`w-12 h-12 border cursor-pointer flex-shrink-0 p-1 bg-black/30 backdrop-blur-xs transition-all duration-200 rounded-none ${
               selectedImage === img ? 'border-[var(--color-theme)] scale-105 shadow-sm' : 'border-[var(--color-primary)]/10 opacity-50 hover:opacity-100'
             }`}
           >
@@ -241,14 +242,16 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
           <div className="flex gap-2">
             <button 
               onClick={onClose}
-              className="font-mono text-xs text-[var(--color-primary)]/40 hover:text-[var(--color-theme)] border border-[var(--color-primary)]/10 hover:border-[var(--color-theme)] px-3 py-1.5 transition-colors cursor-pointer focus:outline-none rounded-none"
+              data-cursor="close"
+              className="font-mono text-xs text-[var(--color-primary)]/40 hover:text-[var(--color-theme)] border border-[var(--color-primary)]/10 hover:border-[var(--color-theme)] px-3 py-1.5 transition-all duration-300 cursor-pointer focus:outline-none rounded-none"
             >
               [ EXIT PRESENTATION ]
             </button>
             {onNextProject && (
               <button 
                 onClick={onNextProject}
-                className="font-mono text-xs text-white bg-[var(--color-theme)] hover:bg-[var(--color-theme)]/80 border border-transparent px-3 py-1.5 transition-colors cursor-pointer focus:outline-none rounded-none font-bold"
+                data-cursor="next"
+                className="font-mono text-xs text-white bg-[var(--color-theme)] hover:bg-[var(--color-theme)]/80 border border-transparent px-3 py-1.5 transition-all duration-300 cursor-pointer focus:outline-none rounded-none font-bold"
               >
                 [ NEXT PRESENTATION ]
               </button>
@@ -266,7 +269,7 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className={`w-full max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] backdrop-blur-xl shadow-2xl border p-6 lg:p-10 rounded-none grid grid-cols-1 lg:grid-cols-12 gap-8 items-center ${
+            className={`w-full max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] backdrop-blur-xl shadow-2xl border p-6 lg:p-10 rounded-none grid grid-cols-1 lg:grid-cols-12 gap-8 items-center hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br ${
               isDark 
                 ? 'bg-black/40 border-white/10' 
                 : 'bg-[var(--color-primary)]/[0.08] border-[var(--color-primary)]/10'
@@ -285,7 +288,7 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
             </div>
 
             {/* Right Box: Text Narrative Card */}
-            <div className={`lg:col-span-6 flex flex-col justify-between p-6 lg:p-8 shadow-lg border rounded-none h-full min-h-[300px] lg:h-[480px] ${
+            <div className={`lg:col-span-6 flex flex-col justify-between p-6 lg:p-8 shadow-lg border rounded-none h-full min-h-[300px] lg:h-[480px] hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br ${
               isDark
                 ? 'bg-black/60 border-white/10 text-white/95'
                 : 'bg-white/80 border-white/30 text-[var(--color-primary)]'
@@ -397,7 +400,8 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
             <button 
               onClick={prevSlide}
               disabled={currentSlide === 0}
-              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs ${
+              data-cursor="back"
+              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs cursor-pointer ${
                 currentSlide === 0 
                   ? 'opacity-25 border-[var(--color-primary)]/10 text-[var(--color-primary)]/40 cursor-not-allowed bg-transparent' 
                   : 'border-[var(--color-primary)]/20 text-[var(--color-primary)] bg-white hover:bg-[var(--color-theme)] hover:text-white hover:border-[var(--color-theme)]'
@@ -408,7 +412,8 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
             <button 
               onClick={nextSlide}
               disabled={currentSlide === slides.length - 1}
-              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs ${
+              data-cursor="next"
+              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs cursor-pointer ${
                 currentSlide === slides.length - 1 
                   ? 'opacity-25 border-[var(--color-primary)]/10 text-[var(--color-primary)]/40 cursor-not-allowed bg-transparent' 
                   : 'border-[var(--color-theme)] text-white bg-[var(--color-theme)] hover:bg-[var(--color-theme)]/80 hover:border-[var(--color-theme)]/80'

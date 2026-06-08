@@ -5,13 +5,15 @@ import LegendMenu from '../components/LegendMenu';
 import LegendDisplay from '../components/LegendDisplay';
 import LegendDetails from '../components/LegendDetails';
 import CaseStudyView from '../components/CaseStudyView';
-import WavyGrid from '../components/WavyGrid';
+import WavyGridCanvas from '../components/WavyGridCanvas';
 import MobileWorksView from '../components/MobileWorksView';
+import PortfolioGridView from '../components/PortfolioGridView';
 
 const Works = () => {
   const [selectedId, setSelectedId] = useState(portfolioLegends[0].id);
   const [showGallery, setShowGallery] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [viewMode, setViewMode] = useState('dossier');
 
   const currentLegend = portfolioLegends.find(l => l.id === selectedId) || portfolioLegends[0];
 
@@ -91,7 +93,7 @@ const Works = () => {
       className="w-full h-screen flex flex-col lg:flex-row relative z-10 pt-[80px] lg:pt-0 bg-[var(--color-background)] transition-colors duration-700 lg:overflow-hidden overflow-y-auto"
     >
       <div className="ebbing-gradient" />
-      <WavyGrid />
+      <WavyGridCanvas />
 
       {/* Background dimmer overlay when presentation is open */}
       <div className={`absolute inset-0 bg-black/20 transition-opacity duration-700 pointer-events-none z-0 ${
@@ -107,34 +109,44 @@ const Works = () => {
           onSelect={handleSelect} 
           legends={portfolioLegends} 
           showGallery={showGallery}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
         />
       </div>
 
       {/* Center & Right Column Layout (Main content area) */}
-      <div className="flex-1 flex flex-col lg:flex-row relative">
-        
-        {/* Center Pane - Graphic Display */}
-        {showGallery ? (
-          <CaseStudyView 
-            legend={currentLegend} 
-            onClose={() => setShowGallery(false)} 
-            onNextProject={handleNextCaseStudy}
-          />
-        ) : (
-          <LegendDisplay legend={currentLegend} />
-        )}
+      {viewMode === 'grid' ? (
+        <PortfolioGridView 
+          legends={portfolioLegends} 
+          onSelectProject={(id) => {
+            setSelectedId(id);
+            setViewMode('dossier');
+          }}
+        />
+      ) : (
+        <div className="flex-1 flex flex-col lg:flex-row relative">
+          {/* Center Pane - Graphic Display */}
+          {showGallery ? (
+            <CaseStudyView 
+              legend={currentLegend} 
+              onClose={() => setShowGallery(false)} 
+              onNextProject={handleNextCaseStudy}
+            />
+          ) : (
+            <LegendDisplay legend={currentLegend} />
+          )}
 
-        {/* Right Pane - Details sheet */}
-        {!showGallery && (
-          <LegendDetails 
-            legend={currentLegend} 
-            onNext={handleNext} 
-            showGallery={showGallery}
-            onToggleGallery={() => setShowGallery(!showGallery)}
-          />
-        )}
-        
-      </div>
+          {/* Right Pane - Details sheet */}
+          {!showGallery && (
+            <LegendDetails 
+              legend={currentLegend} 
+              onNext={handleNext} 
+              showGallery={showGallery}
+              onToggleGallery={() => setShowGallery(!showGallery)}
+            />
+          )}
+        </div>
+      )}
     </motion.main>
   );
 };

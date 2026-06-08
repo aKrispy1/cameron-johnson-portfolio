@@ -220,3 +220,64 @@ body {
     @apply font-sans;
   }
 }
+
+/* CRT Scanline effect overlay for Boot Loader */
+.scanlines-overlay {
+  position: relative;
+  overflow: hidden;
+}
+.scanlines-overlay::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.05) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 1001;
+  pointer-events: none;
+  opacity: 0.75;
+  animation: scanline-flicker 0.25s infinite;
+}
+
+@keyframes scanline-flicker {
+  0% { opacity: 0.70; }
+  50% { opacity: 0.85; }
+  100% { opacity: 0.70; }
+}
+
+/* Retro HUD bracket anchors (+ signs) */
+.hud-anchor {
+  position: relative;
+}
+.hud-anchor::before, .hud-anchor::after {
+  content: "+";
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-theme);
+  opacity: 0.35;
+}
+.hud-anchor-tl::before { top: -4px; left: -4px; }
+.hud-anchor-tr::before { top: -4px; right: -4px; }
+.hud-anchor-bl::after { bottom: -4px; left: -4px; }
+.hud-anchor-br::after { bottom: -4px; right: -4px; }
+
+/* Cybernetic Glowing Borders */
+.glow-border {
+  transition: all 0.3s ease-in-out;
+}
+.glow-border:hover {
+  border-color: var(--color-theme);
+  box-shadow: 0 0 12px rgba(125, 82, 252, 0.25);
+}
+
+.glow-border-secondary:hover {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 12px rgba(188, 239, 12, 0.3);
+}
