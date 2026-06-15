@@ -7,6 +7,43 @@ import CJLogo from '../components/CJLogo';
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [displayCount, setDisplayCount] = useState('00000');
+  const [actualCount, setActualCount] = useState(0);
+
+  // Visitor counter scrambling effect
+  useEffect(() => {
+    const visitKey = 'camjcreative_visits';
+    let count = 12408; // Base starting number
+    const stored = localStorage.getItem(visitKey);
+    if (stored) {
+      count = parseInt(stored, 10) + 1;
+    } else {
+      count = 12408 + Math.floor(Math.random() * 50);
+    }
+    localStorage.setItem(visitKey, count);
+    setActualCount(count);
+
+    // Scramble effect
+    let duration = 1000;
+    let intervalTime = 50;
+    let iterations = duration / intervalTime;
+    let currentIteration = 0;
+
+    const interval = setInterval(() => {
+      if (currentIteration >= iterations) {
+        clearInterval(interval);
+        setDisplayCount(String(count).padStart(5, '0'));
+      } else {
+        const scrambled = Array.from({ length: String(count).length }, () => 
+          Math.floor(Math.random() * 10)
+        ).join('');
+        setDisplayCount(scrambled);
+        currentIteration++;
+      }
+    }, intervalTime);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Loading animation progress
   useEffect(() => {
@@ -294,6 +331,12 @@ const Home = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-none bg-[#BCEF0C] opacity-75"></span>
                 <span className="relative inline-flex rounded-none h-1.5 w-1.5 bg-[#BCEF0C]"></span>
               </span>
+            </div>
+
+            {/* Bottom Right visit counter (light color for dark gradient background) */}
+            <div className="absolute bottom-6 right-8 flex items-center gap-2 font-mono text-[10px] text-[#FAF9FC]/40 font-bold">
+              <span>TOTAL.VISITS //</span>
+              <span className="text-[#BCEF0C] font-bold tracking-wider">{displayCount}</span>
             </div>
           </motion.div>
         )}
