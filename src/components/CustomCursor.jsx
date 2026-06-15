@@ -5,14 +5,19 @@ const CustomCursor = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [cursorText, setCursorText] = useState('');
 
-  // Motion values for hardware-accelerated movement
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
+  // Position coordinates
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
 
-  // Smooth springs for the outer ring trailing effect
-  const springConfig = { damping: 30, stiffness: 300, mass: 0.6 };
-  const trailX = useSpring(mouseX, springConfig);
-  const trailY = useSpring(mouseY, springConfig);
+  // Smooth springs for trailing outer glow (diffuse aura)
+  const auraConfig = { damping: 40, stiffness: 200, mass: 1 };
+  const auraX = useSpring(mouseX, auraConfig);
+  const auraY = useSpring(mouseY, auraConfig);
+
+  // Springs for the main inner cursor / tooltip
+  const cursorConfig = { damping: 25, stiffness: 350, mass: 0.5 };
+  const cursorX = useSpring(mouseX, cursorConfig);
+  const cursorY = useSpring(mouseY, cursorConfig);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -49,42 +54,55 @@ const CustomCursor = () => {
 
   return (
     <>
-      {/* Outer Spring Ring */}
+      {/* 1. Large Diffuse Glow Aura (Trailing Background) */}
       <motion.div
-        className="hidden md:flex fixed top-0 left-0 rounded-full border border-[var(--color-primary)] pointer-events-none z-[9999] items-center justify-center font-mono text-[9px] font-bold tracking-wider shadow-sm"
+        className="hidden md:block fixed top-0 left-0 rounded-full pointer-events-none z-[9998] w-64 h-64 bg-[var(--color-theme)]/8 blur-[60px]"
         style={{
-          x: trailX,
-          y: trailY,
-          translateX: cursorText ? '-50%' : '-16px',
-          translateY: cursorText ? '-50%' : '-16px',
-          // If there's cursor text, expand to fit, otherwise default ring size
-          width: cursorText ? 'auto' : '32px',
-          height: cursorText ? 'auto' : '32px',
-          padding: cursorText ? '6px 12px' : '0px',
-          borderRadius: cursorText ? '4px' : '999px',
-          borderColor: isHovering ? 'var(--color-theme)' : 'var(--color-primary)',
+          x: auraX,
+          y: auraY,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+      />
+
+      {/* 2. Sharp Glass Tooltip / Main Dot Pointer */}
+      <motion.div
+        className="hidden md:flex fixed top-0 left-0 pointer-events-none z-[9999] items-center justify-center font-display text-[9px] font-bold tracking-widest shadow-[0_8px_32px_rgba(0,0,0,0.15)]"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: '-50%',
+          translateY: '-50%',
+          // Dynamic dimensions
+          width: cursorText ? 'auto' : '16px',
+          height: cursorText ? 'auto' : '16px',
+          padding: cursorText ? '6px 14px' : '0px',
+          borderRadius: cursorText ? '2px' : '2px',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
           backgroundColor: cursorText 
-            ? 'var(--color-panel)' 
+            ? 'rgba(255, 255, 255, 0.08)' 
             : isHovering 
-              ? 'var(--color-theme)/10' 
-              : 'rgba(0,0,0,0)',
-          backdropFilter: cursorText ? 'blur(4px)' : 'none',
+              ? 'rgba(255, 255, 255, 0.15)' 
+              : 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
         }}
         animate={{
-          scale: cursorText ? 1.0 : isHovering ? 0.4 : 1,
+          scale: cursorText ? 1.05 : isHovering ? 1.5 : 1,
         }}
         transition={{ type: 'tween', duration: 0.15 }}
       >
         {cursorText ? (
-          <span className="text-[var(--color-theme)] uppercase select-none">
-            [{cursorText}]
+          <span className="text-white uppercase select-none text-[8px] font-mono">
+            {cursorText}
           </span>
         ) : (
-          // Inner dot (only visible when not showing text)
+          // Tiny internal pointer dot (square)
           <motion.div 
-            className="w-1.5 h-1.5 rounded-full"
-            style={{
-              backgroundColor: isHovering ? 'var(--color-theme)' : 'var(--color-primary)'
+            className="w-1 h-1 rounded-none bg-white"
+            animate={{
+              scale: isHovering ? 1.5 : 1,
+              backgroundColor: isHovering ? 'var(--color-secondary)' : '#ffffff'
             }}
           />
         )}

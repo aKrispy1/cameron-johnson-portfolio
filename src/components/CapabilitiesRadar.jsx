@@ -22,11 +22,11 @@ const CapabilitiesRadar = ({ activeFacetId }) => {
   const ratings = FACET_RATINGS[activeFacetId] || FACET_RATINGS.strategist;
 
   // SVG dimensions
-  const width = 360;
-  const height = 300;
+  const width = 400;
+  const height = 340;
   const cx = width / 2;
   const cy = height / 2;
-  const r = 90; // maximum radius
+  const r = 110; // maximum radius
 
   const getCoordinates = (index, value) => {
     const angle = (index * (Math.PI * 2)) / ATTRIBUTES.length - Math.PI / 2;
@@ -36,52 +36,67 @@ const CapabilitiesRadar = ({ activeFacetId }) => {
     return { x, y };
   };
 
-  // Generate grid lines (polygons at 25%, 50%, 75%, 100%)
+  // Grid levels (concentric rings for modern aesthetic)
   const gridLevels = [25, 50, 75, 100];
-  const gridPoints = gridLevels.map(level => {
-    return ATTRIBUTES.map((_, idx) => {
-      const { x, y } = getCoordinates(idx, level);
-      return `${x},${y}`;
-    }).join(' ');
-  });
 
-  // Calculate coordinates for active ratings to construct the SVG path
+  // Calculate coordinates for active ratings
   const activePoints = ATTRIBUTES.map((attr, idx) => {
     const val = ratings[attr.key];
-    const { x, y } = getCoordinates(idx, val);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
+    return getCoordinates(idx, val);
   });
 
-  // Generate path string for Framer Motion animation (M x0 y0 L x1 y1 ... Z)
-  const pathD = `M ${activePoints.map(p => p.replace(',', ' ')).join(' L ')} Z`;
+  // Closed Catmull-Rom spline path helper to create an organic rating blob
+  const getSmoothClosedPath = (points) => {
+    if (points.length === 0) return '';
+    let path = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+    const n = points.length;
+    for (let i = 0; i < n; i++) {
+      const p0 = points[(i - 1 + n) % n];
+      const p1 = points[i];
+      const p2 = points[(i + 1) % n];
+      const p3 = points[(i + 2) % n];
+      
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+      
+      path += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    }
+    return path;
+  };
+
+  const pathD = getSmoothClosedPath(activePoints);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center p-4 select-none relative bg-black/5 border border-[var(--color-primary)]/5 backdrop-blur-xs font-mono text-[9px] text-[var(--color-primary)]/50">
+    <div className="w-full flex flex-col items-center justify-center p-5 select-none relative bg-white/30 border border-white/40 backdrop-blur-md rounded-[2px] shadow-xs font-display text-[9px]">
       {/* Corner indicators */}
-      <span className="absolute top-2 left-3 font-mono text-[7px] text-[var(--color-primary)]/30">[TELEMETRY_RADAR.SYS]</span>
-      <span className="absolute bottom-2 right-3 font-mono text-[7px] text-[var(--color-primary)]/30">CAPABILITIES_MATRIX</span>
+      <span className="absolute top-3 left-4 font-mono text-[7px] text-[#0C0C11]/30 tracking-widest uppercase font-bold">[METRICS.RADAR]</span>
+      <span className="absolute bottom-3 right-4 font-mono text-[7px] text-[#0C0C11]/30 tracking-widest uppercase font-bold">CAPABILITY_BLOBS</span>
 
-      <svg viewBox={`0 0 ${width} ${height}`} className="w-full max-w-[320px] h-auto">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full max-w-[340px] h-auto mt-2">
         <defs>
           <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="var(--color-theme)" stopOpacity="0.25" />
+            <stop offset="0%" stopColor="var(--color-theme)" stopOpacity="0.45" />
+            <stop offset="60%" stopColor="var(--color-accent)" stopOpacity="0.2" />
             <stop offset="100%" stopColor="var(--color-theme)" stopOpacity="0.0" />
           </radialGradient>
         </defs>
 
-        {/* Grid Circles / Polygons */}
-        {gridPoints.map((points, idx) => (
-          <polygon
+        {/* Circular Grid Rings (Concentric circles) */}
+        {gridLevels.map((level, idx) => (
+          <circle
             key={idx}
-            points={points}
+            cx={cx}
+            cy={cy}
+            r={r * (level / 100)}
             fill="none"
-            stroke="var(--color-primary)"
-            strokeWidth="1"
-            opacity="0.06"
+            stroke="rgba(0, 0, 0, 0.05)"
+            strokeWidth="1.2"
           />
         ))}
 
-        {/* Axis lines from center to outer limit */}
+        {/* Axis lines (Dotted radial dividers) */}
         {ATTRIBUTES.map((_, idx) => {
           const outer = getCoordinates(idx, 100);
           return (
@@ -91,10 +106,38 @@ const CapabilitiesRadar = ({ activeFacetId }) => {
               y1={cy}
               x2={outer.x}
               y2={outer.y}
-              stroke="var(--color-primary)"
+              stroke="rgba(0, 0, 0, 0.05)"
               strokeWidth="1"
-              opacity="0.06"
-              strokeDasharray="2 2"
+              strokeDasharray="3 3"
+            />
+          );
+        })}
+
+        {/* Shaded Area Smooth Blob Path (Framer Motion morphing) */}
+        <motion.path
+          d={pathD}
+          fill="url(#radarGlow)"
+          stroke="var(--color-theme)"
+          strokeWidth="2.5"
+          opacity="0.8"
+          animate={{ d: pathD }}
+          transition={{ type: 'spring', damping: 22, stiffness: 100 }}
+          style={{ filter: 'drop-shadow(0 0 6px rgba(125, 82, 252, 0.2))' }}
+        />
+
+        {/* Value Intersection Nodes (Glowing circles) */}
+        {activePoints.map((coords, idx) => {
+          return (
+            <motion.circle
+              key={idx}
+              cx={coords.x}
+              cy={coords.y}
+              r="4.5"
+              fill="var(--color-secondary)"
+              stroke="var(--color-theme)"
+              strokeWidth="1.5"
+              animate={{ cx: coords.x, cy: coords.y }}
+              transition={{ type: 'spring', damping: 22, stiffness: 100 }}
             />
           );
         })}
@@ -104,10 +147,9 @@ const CapabilitiesRadar = ({ activeFacetId }) => {
           const outer = getCoordinates(idx, 100);
           const val = ratings[attr.key];
           
-          // Nudge labels slightly outwards to prevent overlapping
           const labelAngle = (idx * (Math.PI * 2)) / ATTRIBUTES.length - Math.PI / 2;
-          const lx = cx + Math.cos(labelAngle) * (r + 20);
-          const ly = cy + Math.sin(labelAngle) * (r + 12);
+          const lx = cx + Math.cos(labelAngle) * (r + 24);
+          const ly = cy + Math.sin(labelAngle) * (r + 15);
           
           let anchor = 'middle';
           if (Math.cos(labelAngle) > 0.1) anchor = 'start';
@@ -120,54 +162,25 @@ const CapabilitiesRadar = ({ activeFacetId }) => {
                 y={ly}
                 textAnchor={anchor}
                 fill="var(--color-primary)"
-                opacity="0.7"
-                fontSize="8"
+                opacity="0.8"
+                fontSize="7.5"
                 fontWeight="bold"
                 letterSpacing="0.05em"
+                className="font-display font-bold"
               >
                 {attr.name}
               </text>
               <text
                 x={lx}
-                y={ly + 8}
+                y={ly + 9}
                 textAnchor={anchor}
                 fill="var(--color-theme)"
-                fontWeight="black"
+                fontWeight="bold"
                 fontSize="7"
               >
                 {val}%
               </text>
             </g>
-          );
-        })}
-
-        {/* Shaded Area Polygon with Framer Motion path morphing */}
-        <motion.path
-          d={pathD}
-          fill="url(#radarGlow)"
-          stroke="var(--color-theme)"
-          strokeWidth="2"
-          opacity="0.85"
-          animate={{ d: pathD }}
-          transition={{ type: 'spring', damping: 20, stiffness: 120 }}
-        />
-
-        {/* Value Points (glowing circles at active coordinate intersections) */}
-        {ATTRIBUTES.map((attr, idx) => {
-          const val = ratings[attr.key];
-          const coords = getCoordinates(idx, val);
-          return (
-            <motion.circle
-              key={idx}
-              cx={coords.x}
-              cy={coords.y}
-              r="3.5"
-              fill="var(--color-secondary)"
-              stroke="var(--color-theme)"
-              strokeWidth="1.5"
-              animate={{ cx: coords.x, cy: coords.y }}
-              transition={{ type: 'spring', damping: 20, stiffness: 120 }}
-            />
           );
         })}
       </svg>

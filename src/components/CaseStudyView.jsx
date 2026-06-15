@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const getSecondaryContrastColor = (legend) => {
-  const secColor = (legend.secondaryColor || '#ffffff').toLowerCase();
-  if (secColor === '#ffffff' || secColor === '#ffffffff' || secColor === '#faf9fc' || secColor === '#fcfcfc') {
-    return 'text-black';
-  }
-  return 'text-white';
-};
-
 // Interactive sub-gallery for process images inside the slide
 const GallerySubGrid = ({ images }) => {
   const [selectedImage, setSelectedImage] = useState(images[0] || '');
@@ -24,8 +16,8 @@ const GallerySubGrid = ({ images }) => {
   return (
     <div className="w-full h-full flex flex-col justify-between p-2">
       {/* Big Preview Box */}
-      <div className="flex-1 flex items-center justify-center min-h-[180px] lg:min-h-[260px] border border-[var(--color-primary)]/10 bg-black/20 backdrop-blur-xs p-4 relative overflow-hidden">
-        <span className="absolute top-2 left-3 font-mono text-[8px] text-[var(--color-primary)]/20">
+      <div className="flex-1 flex items-center justify-center min-h-[180px] lg:min-h-[260px] border border-white/20 bg-white/10 backdrop-blur-md p-4 relative overflow-hidden rounded-[2px]">
+        <span className="absolute top-3 left-4 font-mono text-[8px] text-[var(--color-primary)]/30 font-bold">
           [PROCESS.PREVIEW]
         </span>
         <img 
@@ -37,17 +29,13 @@ const GallerySubGrid = ({ images }) => {
       
       {/* Thumbnails Row */}
       <div className="flex gap-2 mt-4 overflow-x-auto justify-start lg:justify-center py-2 select-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <style>{`
-          .no-scroll::-webkit-scrollbar { display: none; }
-          .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        `}</style>
         {images.map((img, idx) => (
           <div 
             key={idx}
             onClick={() => setSelectedImage(img)}
             data-cursor="view"
-            className={`w-12 h-12 border cursor-pointer flex-shrink-0 p-1 bg-black/30 backdrop-blur-xs transition-all duration-200 rounded-none ${
-              selectedImage === img ? 'border-[var(--color-theme)] scale-105 shadow-sm' : 'border-[var(--color-primary)]/10 opacity-50 hover:opacity-100'
+            className={`w-12 h-12 border cursor-pointer flex-shrink-0 p-1 bg-white/5 backdrop-blur-md transition-all duration-200 rounded-[2px] ${
+              selectedImage === img ? 'border-[var(--color-theme)] scale-105 bg-white/30' : 'border-white/15 opacity-60'
             }`}
           >
             <img src={img} className="w-full h-full object-contain" />
@@ -58,8 +46,7 @@ const GallerySubGrid = ({ images }) => {
   );
 };
 
-const CaseStudyView = ({ legend, onClose, onNextProject }) => {
-  const isDark = legend.bgColor === '#0a0a0a';
+const CaseStudyView = ({ legend, onClose, onPrevProject, onNextProject }) => {
   const caseStudy = legend.caseStudy || {};
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -199,7 +186,7 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
           loop 
           muted 
           playsInline
-          className="w-full h-full object-cover shadow-sm"
+          className="max-w-full max-h-full object-contain shadow-xs"
         />
       );
     } else if (slide.mediaType === 'gallery') {
@@ -209,7 +196,7 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
         <img 
           src={slide.media} 
           alt={slide.title} 
-          className="w-full h-full object-cover"
+          className="max-w-full max-h-full object-contain"
         />
       );
     }
@@ -223,16 +210,16 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
       onTouchEnd={handleTouchEnd}
     >
       {/* Top Banner / Slide Navigation Telemetry */}
-      <div className="px-8 lg:px-12 pt-8 lg:pt-36 flex items-center justify-between z-20">
+      <div className="w-[92%] max-w-6xl mx-auto pt-8 lg:pt-36 pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 z-20">
         <div className="flex flex-col">
-          <span className="font-mono text-[9px] text-[var(--color-primary)]/40 uppercase tracking-widest block mb-0.5">
+          <span className="font-mono text-[9px] text-[var(--color-primary)]/40 uppercase tracking-widest block mb-0.5 font-bold">
             Dossier Presentation // {legend.title}
           </span>
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs text-[var(--color-theme)] font-bold tracking-wider">
+            <span className="font-mono text-xs text-[var(--color-theme)] font-bold tracking-widest uppercase">
               SLIDE {String(currentSlide + 1).padStart(2, '0')} // {String(slides.length).padStart(2, '0')}
             </span>
-            <span className="font-mono text-[9px] text-[var(--color-primary)]/30 font-bold uppercase tracking-tight bg-[var(--color-primary)]/5 px-2 py-0.5">
+            <span className="font-mono text-[9px] text-[var(--color-primary)]/50 font-bold uppercase tracking-widest bg-[var(--color-primary)]/5 border border-white/20 px-2.5 py-0.5 rounded-[2px]">
               {activeSlide.label}
             </span>
           </div>
@@ -240,20 +227,30 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
 
         {onClose && (
           <div className="flex gap-2">
+            {onPrevProject && (
+              <button 
+                onClick={onPrevProject}
+                data-cursor="prev"
+                className="font-display text-[10px] text-[var(--color-primary)]/60 hover:text-[var(--color-primary)] bg-white/20 hover:bg-white/35 border border-white/20 rounded-[2px] px-5 py-2 transition-all duration-300 cursor-pointer focus:outline-none font-bold uppercase tracking-wider"
+              >
+                Prev Presentation
+              </button>
+            )}
             <button 
               onClick={onClose}
               data-cursor="close"
-              className="font-mono text-xs text-[var(--color-primary)]/40 hover:text-[var(--color-theme)] border border-[var(--color-primary)]/10 hover:border-[var(--color-theme)] px-3 py-1.5 transition-all duration-300 cursor-pointer focus:outline-none rounded-none"
+              className="font-display text-[10px] text-[var(--color-primary)]/60 hover:text-[var(--color-primary)] bg-white/20 hover:bg-white/35 border border-white/20 rounded-[2px] px-5 py-2 transition-all duration-300 cursor-pointer focus:outline-none font-bold uppercase tracking-wider"
             >
-              [ EXIT PRESENTATION ]
+              Exit Study
             </button>
             {onNextProject && (
               <button 
                 onClick={onNextProject}
                 data-cursor="next"
-                className="font-mono text-xs text-white bg-[var(--color-theme)] hover:bg-[var(--color-theme)]/80 border border-transparent px-3 py-1.5 transition-all duration-300 cursor-pointer focus:outline-none rounded-none font-bold"
+                className="font-display text-[10px] text-white hover:opacity-90 transition-all duration-300 cursor-pointer focus:outline-none font-bold uppercase tracking-wider shadow-sm rounded-[2px] px-5 py-2 border-transparent"
+                style={{ backgroundColor: 'var(--color-theme)' }}
               >
-                [ NEXT PRESENTATION ]
+                Next Presentation
               </button>
             )}
           </div>
@@ -261,57 +258,45 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
       </div>
 
       {/* Main Slide Panel (Framer Motion Slide-in Transitions) */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 overflow-hidden">
+      <div className="flex-grow w-[92%] max-w-6xl mx-auto flex flex-col justify-center py-4 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div 
             key={`${legend.id}-slide-${currentSlide}`}
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
-            className={`w-full max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] backdrop-blur-xl shadow-2xl border p-6 lg:p-10 rounded-none grid grid-cols-1 lg:grid-cols-12 gap-8 items-center hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br ${
-              isDark 
-                ? 'bg-black/40 border-white/10' 
-                : 'bg-[var(--color-primary)]/[0.08] border-[var(--color-primary)]/10'
-            }`}
+            exit={{ opacity: 0, x: -15 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="w-full glass-panel shadow-xs border border-white/20 p-6 lg:p-10 rounded-[2px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch relative"
           >
             {/* Left Box: Graphic Canvas */}
-            <div className="lg:col-span-6 h-[260px] lg:h-[480px] border border-[var(--color-primary)]/15 bg-black/30 backdrop-blur-sm relative flex items-center justify-center p-0 overflow-hidden shadow-md rounded-none">
+            <div className="lg:col-span-7 min-h-[260px] lg:min-h-[390px] border border-white/20 bg-white/10 relative flex items-center justify-center p-4 overflow-hidden shadow-inner rounded-[2px]">
               {/* Technical drafting metadata */}
-              <span className="absolute top-2 left-3 font-mono text-[8px] text-[var(--color-primary)]/20">
+              <span className="absolute top-3 left-4 font-mono text-[8px] text-[var(--color-primary)]/30 font-bold">
                 [SLIDE.ASSET]
               </span>
-              <span className="absolute bottom-2 right-3 font-mono text-[8px] text-[var(--color-primary)]/20">
+              <span className="absolute bottom-3 right-4 font-mono text-[8px] text-[var(--color-primary)]/30 font-bold">
                 SYSTEM // CJV4_SYS
               </span>
               {renderMedia(activeSlide)}
             </div>
 
             {/* Right Box: Text Narrative Card */}
-            <div className={`lg:col-span-6 flex flex-col justify-between p-6 lg:p-8 shadow-lg border rounded-none h-full min-h-[300px] lg:h-[480px] hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br ${
-              isDark
-                ? 'bg-black/60 border-white/10 text-white/95'
-                : 'bg-white/80 border-white/30 text-[var(--color-primary)]'
-            }`}>
+            <div className="lg:col-span-5 flex flex-col justify-between p-6 lg:p-8 border border-white/20 rounded-[2px] min-h-[300px] lg:min-h-[390px] bg-white/25 backdrop-blur-md">
               <div>
-                {/* Thick accent bar matching Screenshot 3 */}
-                <div className={`w-32 h-3.5 mb-5 ${
-                  isDark ? 'bg-white/90' : 'bg-[var(--color-primary)]'
-                }`} />
+                {/* Thin horizontal accent bar */}
+                <div className="w-16 h-1 rounded-none mb-5 bg-[var(--color-theme)]" />
 
-                {/* Heading */}
+                {/* Heading - Tomorrow Bold */}
                 {activeSlide.showMeta ? (
                   <>
                     {activeSlide.subtitle && (
                       <div className="mb-3">
-                        <span className={`inline-block font-mono text-[10px] font-bold px-2 py-1 tracking-wider uppercase ${
-                          isDark ? 'bg-white/10 text-white/90' : `bg-[var(--color-secondary)] ${getSecondaryContrastColor(legend)}`
-                        }`}>
+                        <span className="inline-block bg-[var(--color-secondary)]/15 border border-[var(--color-secondary)]/30 font-display text-[9px] font-bold px-2.5 py-1 tracking-wider uppercase rounded-[2px] text-[var(--color-theme)]">
                           {activeSlide.subtitle}
                         </span>
                       </div>
                     )}
-                    <h2 className="text-3xl lg:text-4xl font-display font-bold leading-none uppercase tracking-tighter mb-4">
+                    <h2 className="text-2xl lg:text-3xl font-display font-bold leading-none uppercase tracking-tight mb-4 text-[var(--color-primary)]">
                       {activeSlide.title}
                     </h2>
                   </>
@@ -320,41 +305,37 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
                     <span className="font-mono text-[9px] text-[var(--color-theme)] font-bold tracking-widest block mb-1">
                       {activeSlide.label}
                     </span>
-                    <h3 className="text-2xl lg:text-3xl font-display font-bold leading-none uppercase tracking-tighter">
+                    <h3 className="text-xl lg:text-2xl font-display font-bold leading-none uppercase tracking-tight text-[var(--color-primary)]">
                       {activeSlide.title}
                     </h3>
                   </div>
                 )}
 
                 {/* Narrative Content */}
-                <p className={`font-sans text-sm lg:text-base leading-relaxed ${
-                  isDark ? 'text-white/80' : 'text-[var(--color-primary)]/85'
-                }`}>
+                <p className="font-sans text-sm md:text-base leading-relaxed text-[var(--color-primary)]/75 font-medium">
                   {activeSlide.content}
                 </p>
               </div>
 
               {/* Meta details if overview */}
               {activeSlide.showMeta && (
-                <div className={`flex flex-wrap gap-4 border-t pt-4 font-mono text-[10px] ${
-                  isDark ? 'border-white/10 text-white/40' : 'border-[var(--color-primary)]/10 text-[var(--color-primary)]/40'
-                }`}>
+                <div className="flex flex-wrap gap-5 border-t border-black/5 pt-4 mt-6 font-mono text-[9px] text-[var(--color-primary)]/40 font-bold">
                   {legend.client && (
                     <div>
                       <span className="uppercase block font-bold">Client:</span>
-                      <span className={isDark ? 'text-white/70' : 'text-[var(--color-primary)]/70'}>{legend.client}</span>
+                      <span className="text-[var(--color-primary)]/70 font-sans text-xs">{legend.client}</span>
                     </div>
                   )}
                   {legend.year && (
                     <div>
                       <span className="uppercase block font-bold">Year:</span>
-                      <span className={isDark ? 'text-white/70' : 'text-[var(--color-primary)]/70'}>{legend.year}</span>
+                      <span className="text-[var(--color-primary)]/70 font-sans text-xs">{legend.year}</span>
                     </div>
                   )}
                   {legend.location && (
                     <div>
                       <span className="uppercase block font-bold">Location:</span>
-                      <span className={`font-bold ${isDark ? 'text-white/80' : 'text-[var(--color-secondary)]'}`}>
+                      <span className="text-[var(--color-theme)] font-bold font-sans text-xs">
                         {legend.location.name}
                       </span>
                     </div>
@@ -367,15 +348,15 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
       </div>
 
       {/* Bottom Timeline Progress & Controls */}
-      <div className="w-full pb-8 flex flex-col gap-4 z-20">
+      <div className="w-[92%] max-w-6xl mx-auto pb-8 z-20">
         
         {/* Progress Timeline indicators & Action Row */}
-        <div className="max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] w-full mx-auto border-t border-[var(--color-primary)]/10 pt-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="w-full border-t border-[var(--color-primary)]/10 pt-4 flex flex-col md:flex-row items-center justify-between gap-4">
           
           {/* Left: Tooltip info */}
           <div className="flex-1 text-left hidden md:block">
-            <span className="font-mono text-[9px] text-[var(--color-primary)]/40 tracking-wider">
-              SWIPE TO NAVIGATE // OR USE LEFT/RIGHT ARROW KEYS
+            <span className="font-mono text-[9px] text-[var(--color-primary)]/35 tracking-widest uppercase font-bold">
+              SWIPE TO NAVIGATE // USE LEFT/RIGHT ARROW KEYS
             </span>
           </div>
 
@@ -387,39 +368,41 @@ const CaseStudyView = ({ legend, onClose, onNextProject }) => {
                 onClick={() => setCurrentSlide(idx)}
                 className={`h-1.5 transition-all duration-300 cursor-pointer rounded-none ${
                   idx === currentSlide 
-                    ? 'w-8 bg-[var(--color-theme)]' 
-                    : 'w-2 bg-[var(--color-primary)]/15 hover:bg-[var(--color-primary)]/35'
+                    ? 'w-8' 
+                    : 'w-2 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20'
                 }`}
+                style={idx === currentSlide ? { backgroundColor: 'var(--color-theme)' } : {}}
                 title={`Jump to slide ${idx + 1}`}
               />
             ))}
           </div>
 
           {/* Right: Grouped Slide Navigation Buttons */}
-          <div className="flex-1 flex justify-end items-center gap-2">
+          <div className="flex-1 flex justify-end items-center gap-2.5">
             <button 
               onClick={prevSlide}
               disabled={currentSlide === 0}
               data-cursor="back"
-              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs cursor-pointer ${
+              className={`flex items-center gap-2 border px-5 py-2 font-display text-[10px] font-bold tracking-wider transition-all duration-300 rounded-[2px] focus:outline-none shadow-xs cursor-pointer ${
                 currentSlide === 0 
-                  ? 'opacity-25 border-[var(--color-primary)]/10 text-[var(--color-primary)]/40 cursor-not-allowed bg-transparent' 
-                  : 'border-[var(--color-primary)]/20 text-[var(--color-primary)] bg-white hover:bg-[var(--color-theme)] hover:text-white hover:border-[var(--color-theme)]'
+                  ? 'opacity-20 border-white/10 text-[var(--color-primary)]/30 cursor-not-allowed bg-transparent' 
+                  : 'border-white/20 text-[var(--color-primary)] bg-white/20 hover:bg-white/40'
               }`}
             >
-              ← PREV
+              PREV
             </button>
             <button 
               onClick={nextSlide}
               disabled={currentSlide === slides.length - 1}
               data-cursor="next"
-              className={`flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-wider transition-all duration-300 rounded-none focus:outline-none shadow-xs cursor-pointer ${
+              className={`flex items-center gap-2 border px-5 py-2 font-display text-[10px] font-bold tracking-wider transition-all duration-300 rounded-[2px] focus:outline-none shadow-xs cursor-pointer ${
                 currentSlide === slides.length - 1 
-                  ? 'opacity-25 border-[var(--color-primary)]/10 text-[var(--color-primary)]/40 cursor-not-allowed bg-transparent' 
-                  : 'border-[var(--color-theme)] text-white bg-[var(--color-theme)] hover:bg-[var(--color-theme)]/80 hover:border-[var(--color-theme)]/80'
+                  ? 'opacity-20 border-white/10 text-[var(--color-primary)]/30 cursor-not-allowed bg-transparent' 
+                  : 'text-white border-transparent hover:opacity-90'
               }`}
+              style={currentSlide === slides.length - 1 ? {} : { backgroundColor: 'var(--color-theme)' }}
             >
-              NEXT →
+              NEXT
             </button>
           </div>
 

@@ -1,22 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const getSecondaryContrastColor = (legend) => {
-  const secColor = (legend.secondaryColor || '#ffffff').toLowerCase();
-  if (secColor === '#ffffff' || secColor === '#ffffffff' || secColor === '#faf9fc' || secColor === '#fcfcfc') {
-    return 'text-black';
-  }
-  return 'text-white';
-};
-
-const getThemeContrastColor = (themeColor) => {
-  const color = (themeColor || '').toLowerCase();
-  if (color === '#c70629ff' || color === '#61289aff' || color === '#61289a') {
-    return 'text-white';
-  }
-  return 'text-black';
-};
-
 const MobileGallerySubGrid = ({ images }) => {
   const [selectedImage, setSelectedImage] = useState(images[0] || '');
 
@@ -29,9 +13,9 @@ const MobileGallerySubGrid = ({ images }) => {
   if (images.length === 0) return null;
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-1.5 overflow-hidden">
+    <div className="w-full h-full flex flex-col justify-between p-2 overflow-hidden">
       {/* Mini Preview Box */}
-      <div className="flex-1 flex items-center justify-center bg-black/10 p-1 relative overflow-hidden h-[150px]">
+      <div className="flex-1 flex items-center justify-center bg-black/20 p-2 relative overflow-hidden h-[150px] rounded-[2px] border border-white/10">
         <img 
           src={selectedImage} 
           alt="Process exploration preview" 
@@ -40,13 +24,13 @@ const MobileGallerySubGrid = ({ images }) => {
       </div>
       
       {/* Thumbnails Row */}
-      <div className="flex gap-1.5 mt-1 overflow-x-auto justify-start py-0.5 select-none flex-shrink-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <div className="flex gap-2 mt-2 overflow-x-auto justify-start py-0.5 select-none flex-shrink-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {images.map((img, idx) => (
           <div 
             key={idx}
             onClick={() => setSelectedImage(img)}
-            className={`w-7 h-7 border cursor-pointer flex-shrink-0 p-0.5 bg-black/40 transition-all duration-200 rounded-none ${
-              selectedImage === img ? 'border-[var(--color-theme)] scale-105 shadow-xs' : 'border-[var(--color-primary)]/10 opacity-60 hover:opacity-100'
+            className={`w-8 h-8 border cursor-pointer flex-shrink-0 p-0.5 bg-white/10 transition-all duration-200 rounded-[2px] ${
+              selectedImage === img ? 'border-[var(--color-theme)] scale-105 bg-white/30' : 'border-white/10 opacity-60'
             }`}
           >
             <img src={img} className="w-full h-full object-contain" />
@@ -201,72 +185,64 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
 
   return (
     <div 
-      className="w-full flex flex-col justify-between p-4 pt-[104px] pb-4 overflow-hidden select-none bg-[var(--color-background)] h-screen"
+      className="w-full flex flex-col justify-between p-4 pt-24 pb-4 overflow-hidden select-none bg-[#CCCCCC] h-screen relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      <div className="absolute inset-0 z-0 opacity-40">
+        <div className="ebbing-gradient" />
+      </div>
+
       {/* 1. Horizontal Scrollbar Menu at the top */}
-      <div className="w-full overflow-x-auto flex gap-3 pb-3 border-b border-[var(--color-primary)]/10 select-none no-scroll flex-shrink-0">
+      <div className="w-full overflow-x-auto flex gap-2.5 pb-3 border-b border-white/10 select-none no-scroll flex-shrink-0 relative z-10">
         <style>{`
           .no-scroll::-webkit-scrollbar { display: none; }
           .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         `}</style>
         {legends.map((legend, index) => {
           const isSelected = selectedId === legend.id;
-          const formattedIndex = `[${String(index + 1).padStart(2, '0')}]`;
+          const formattedIndex = `${String(index + 1).padStart(2, '0')}`;
           
           return (
             <div 
               key={legend.id}
               onClick={() => onSelect(legend.id)}
-              className={`flex-shrink-0 flex items-center gap-2 px-3 py-1.5 border cursor-pointer transition-all duration-300 rounded-none ${
+              className={`flex-shrink-0 flex items-center gap-2.5 px-4 py-2.5 border cursor-pointer transition-all duration-300 rounded-[2px] ${
                 isSelected 
-                  ? 'border-[var(--color-primary)] bg-white text-black shadow-xs' 
-                  : 'border-[var(--color-primary)]/15 bg-transparent text-[var(--color-primary)]/70'
+                  ? 'border-[var(--color-theme)] bg-white/30 shadow-xs' 
+                  : 'border-white/10 bg-white/10 opacity-70'
               }`}
             >
-              <span className={`font-mono text-[10px] ${isSelected ? 'text-[var(--color-theme)] font-bold' : 'text-[var(--color-primary)]/50'}`}>
+              <span className={`font-mono text-[10px] ${isSelected ? 'text-[var(--color-theme)] font-bold' : 'text-[var(--color-primary)]/30'}`}>
                 {formattedIndex}
               </span>
-              <div className="w-6 h-6 bg-white flex items-center justify-center p-0.5 border border-gray-100 flex-shrink-0">
+              <div className="w-6 h-6 bg-white/5 flex items-center justify-center p-1 border border-white/15 rounded-[2px] flex-shrink-0">
                 <img 
                   src={legend.file} 
                   alt={legend.title} 
                   className="w-full h-full object-contain" 
                 />
               </div>
-              <span className="font-sans font-bold text-[11px] tracking-wider uppercase whitespace-nowrap">{legend.title}</span>
+              <span className="font-display font-bold text-xs tracking-wider uppercase whitespace-nowrap text-[var(--color-primary)]">{legend.title}</span>
             </div>
           );
         })}
       </div>
 
-      {/* Subtitle Banner block moved here, sitting just over the gallery section */}
-      <div className="flex-shrink-0 mt-2 mb-0.5 flex justify-start">
-        <span className={`inline-block bg-[var(--color-secondary)] font-mono text-[9px] font-bold px-3 py-1 uppercase tracking-widest rounded-none border border-[var(--color-primary)]/10 ${getSecondaryContrastColor(currentLegend)}`}>
+      {/* Subtitle Banner tag */}
+      <div className="flex-shrink-0 mt-3 mb-1 flex justify-start relative z-10">
+        <span className="inline-block bg-[var(--color-secondary)]/15 border border-[var(--color-secondary)]/30 font-display text-[9px] font-bold px-3 py-1 uppercase tracking-widest rounded-[2px] text-[var(--color-theme)]">
           {activeSlide.subtitle || currentLegend.subtitle}
         </span>
       </div>
 
-      {/* 2. Gallery Block (Expanded width with absolutely-floated arrows and indicators) */}
-      <div className="w-full h-[260px] max-h-[32vh] relative flex-shrink-0 my-2 shadow-md border border-[var(--color-primary)]/15 overflow-hidden bg-black/35">
-        
-        {/* Left Floating Arrow */}
-        <button 
-          onClick={prevSlide}
-          disabled={currentSlide === 0}
-          className={`absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-12 border border-white/20 bg-black/40 backdrop-blur-xs text-white flex items-center justify-center font-mono text-base rounded-none cursor-pointer focus:outline-none transition-all active:bg-[var(--color-theme)] active:text-black ${
-            currentSlide === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'
-          }`}
-        >
-          ←
-        </button>
-
+      {/* 2. Gallery Block - styled as glass box card */}
+      <div className="w-full h-[240px] max-h-[30vh] relative flex-shrink-0 my-2 shadow-[0_8px_24px_rgba(12,12,17,0.04)] border border-white/20 overflow-hidden bg-white/25 rounded-[2px] backdrop-blur-md z-10">
         {/* Media Frame wrapper */}
         <div className="w-full h-full flex items-center justify-center">
-          <span className="absolute top-1.5 left-2 font-mono text-[7px] text-white/30 z-10">[SLIDE.ASSET]</span>
-          <span className="absolute bottom-1.5 right-2 font-mono text-[7px] text-white/30 z-10">SYSTEM // CJV4_SYS</span>
+          <span className="absolute top-2 left-3 font-mono text-[7px] text-[var(--color-primary)]/30 z-10 font-bold">[SLIDE.ASSET]</span>
+          <span className="absolute bottom-2 right-3 font-mono text-[7px] text-[var(--color-primary)]/30 z-10 font-bold font-mono">SYSTEM // CJV4_SYS</span>
           <AnimatePresence mode="wait">
             <motion.div
               key={`${currentLegend.id}-slide-${currentSlide}`}
@@ -280,92 +256,109 @@ const MobileWorksView = ({ selectedId, onSelect, legends, currentLegend, onNextP
             </motion.div>
           </AnimatePresence>
         </div>
+      </div>
 
-        {/* Right Floating Arrow */}
+      {/* Carousel Controls Row under the image frame */}
+      <div className="w-full flex items-center justify-between mt-1 mb-2 px-1 relative z-10 flex-shrink-0">
+        {/* Left Arrow */}
         <button 
-          onClick={nextSlide}
-          disabled={currentSlide === slides.length - 1}
-          className={`absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-12 border border-white/20 bg-black/40 backdrop-blur-xs text-white flex items-center justify-center font-mono text-base rounded-none cursor-pointer focus:outline-none transition-all active:bg-[var(--color-theme)] active:text-black ${
-            currentSlide === slides.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          onClick={prevSlide}
+          disabled={currentSlide === 0}
+          className={`w-8 h-8 rounded-[2px] border border-white/20 bg-white/10 text-[var(--color-primary)] flex items-center justify-center font-mono text-sm cursor-pointer focus:outline-none transition-all active:scale-95 ${
+            currentSlide === 0 ? 'opacity-20 cursor-not-allowed' : 'opacity-100 hover:bg-white/20'
           }`}
         >
-          →
+          ←
         </button>
 
-        {/* Floating Timeline dots indicators */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 justify-center bg-black/25 px-2 py-0.5 border border-white/5 rounded-none backdrop-blur-xs">
+        {/* Timeline dots indicators (Carousel slide bar) */}
+        <div className="flex gap-1.5 justify-center bg-white/15 border border-white/20 px-3 py-2 rounded-[2px] backdrop-blur-md">
           {slides.map((_, idx) => (
             <button 
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               className={`h-1.5 transition-all duration-300 cursor-pointer rounded-none ${
                 idx === currentSlide 
-                  ? 'w-7 bg-[var(--color-theme)]' 
-                  : 'w-2 bg-white/40'
+                  ? 'w-6' 
+                  : 'w-1.5 bg-white/20'
               }`}
+              style={idx === currentSlide ? { backgroundColor: 'var(--color-theme)' } : {}}
             />
           ))}
         </div>
+
+        {/* Right Arrow */}
+        <button 
+          onClick={nextSlide}
+          disabled={currentSlide === slides.length - 1}
+          className={`w-8 h-8 rounded-[2px] border border-white/20 bg-white/10 text-[var(--color-primary)] flex items-center justify-center font-mono text-sm cursor-pointer focus:outline-none transition-all active:scale-95 ${
+            currentSlide === slides.length - 1 ? 'opacity-20 cursor-not-allowed' : 'opacity-100 hover:bg-white/20'
+          }`}
+        >
+          →
+        </button>
       </div>
 
       {/* 3. Project description details sitting below the gallery */}
-      <div className="flex flex-col gap-1.5 flex-grow justify-start overflow-hidden">
+      <div className="flex flex-col gap-1.5 flex-grow justify-start overflow-hidden mt-1 px-1 relative z-10">
         
-        {/* Row 1: Big Bold Title */}
+        {/* Row 1: Title - Tomorrow Bold */}
         <div className="flex-shrink-0">
-          <h1 className="text-2xl font-display font-bold uppercase tracking-tight text-[var(--color-primary)] leading-none my-0.5">
+          <h1 className="text-xl font-display font-bold uppercase tracking-tight text-[var(--color-primary)] leading-none my-0.5">
             {activeSlide.title || currentLegend.title}
           </h1>
         </div>
 
-        {/* Row 2: Dossier telemetry label as a subtitle underneath the project name */}
-        <div className="flex justify-between items-center flex-shrink-0 mt-0.5">
-          <span className="font-mono text-[9px] text-[var(--color-primary)]/40 tracking-wider uppercase">
+        {/* Row 2: Dossier label */}
+        <div className="flex justify-between items-center flex-shrink-0">
+          <span className="font-mono text-[8px] text-[var(--color-primary)]/35 tracking-widest uppercase font-bold">
             Creative Dossier
           </span>
         </div>
 
-        {/* Row 3: Capabilities Tags with contrast-safe index formatting */}
-        <div className="flex flex-wrap gap-1.5 flex-shrink-0 max-h-[32px] overflow-hidden mt-0.5">
+        {/* Row 3: Capabilities Tags */}
+        <div className="flex flex-wrap gap-1.5 flex-shrink-0 max-h-[32px] overflow-hidden mt-1">
           {currentLegend.scope && currentLegend.scope.map((tag, i) => (
             <span 
               key={i}
-              className="inline-flex items-center border border-[var(--color-primary)]/20 font-mono text-[8px] uppercase text-[var(--color-primary)]/70 bg-black/5"
+              className="inline-flex items-center border border-white/25 font-mono text-[8px] uppercase text-[var(--color-primary)]/70 bg-white/20 rounded-[2px] overflow-hidden"
             >
-              <span className={`bg-[var(--color-secondary)] px-1 py-0.5 font-bold border-r border-[var(--color-primary)]/20 ${getSecondaryContrastColor(currentLegend)}`}>
+              <span className="bg-[var(--color-primary)]/5 text-[var(--color-theme)] px-2 py-0.5 font-bold border-r border-white/25 rounded-l-none">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <span className="px-1.5 py-0.5 font-sans font-bold">
+              <span className="px-2.5 py-0.5 font-sans font-bold">
                 {tag}
               </span>
             </span>
           ))}
         </div>
 
-        {/* Row 4: Text Narrative paragraph (Safe-scrollable if exceeds layout bounds) */}
-        <div className="flex-1 overflow-hidden min-h-[50px] mt-1.5">
-          <p className="font-sans text-[13px] text-[var(--color-primary)]/85 leading-relaxed overflow-y-auto max-h-full pr-1.5 custom-scrollbar">
+        {/* Row 4: Text Narrative */}
+        <div className="flex-1 overflow-hidden min-h-[40px] mt-2 pb-2">
+          <p className="font-sans text-[12px] text-[var(--color-primary)]/75 leading-relaxed overflow-y-auto max-h-full pr-1.5 custom-scrollbar font-medium">
             {activeSlide.content}
           </p>
         </div>
 
       </div>
 
-      {/* 4. Footer Project Cycle Buttons (Side-by-side at the very bottom) */}
-      <div className="flex gap-3 mt-2 pb-2 flex-shrink-0">
+      {/* 4. Footer Project Cycle Buttons - solid slate blue */}
+      <div className="flex gap-3 mt-2 pb-1 flex-shrink-0 relative z-10">
         <button 
           onClick={onPrevProject}
-          className="flex-1 py-2.5 font-mono text-xs font-bold uppercase tracking-wider bg-[#19132d] text-white border border-[var(--color-primary)]/20 active:bg-[#19132d]/85 rounded-none cursor-pointer focus:outline-none transition-colors"
+          className="flex-1 py-3 font-display text-[10px] font-bold uppercase tracking-wider bg-white/20 hover:bg-white/35 text-[var(--color-primary)] border border-white/20 rounded-[2px] cursor-pointer focus:outline-none transition-all active:scale-[0.98]"
         >
-          &lt; Prev Project
+          Prev Project
         </button>
         <button 
           onClick={onNextProject}
-          className={`flex-1 py-2.5 font-mono text-xs font-bold uppercase tracking-wider bg-[var(--color-theme)] border border-[var(--color-primary)]/20 active:opacity-90 rounded-none cursor-pointer focus:outline-none transition-all ${
-            getThemeContrastColor(currentLegend.themeColor)
-          }`}
+          className="flex-1 py-3 font-display text-[10px] font-bold uppercase tracking-wider text-white border-transparent rounded-[2px] cursor-pointer focus:outline-none transition-all active:scale-[0.98]"
+          style={{ 
+            backgroundColor: 'var(--color-theme)',
+            boxShadow: '0 4px 12px color-mix(in srgb, var(--color-theme) 25%, transparent)'
+          }}
         >
-          Next Project &gt;
+          Next Project
         </button>
       </div>
 

@@ -1,36 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import WavyGridCanvas from '../components/WavyGridCanvas';
+import { Link as RouterLink } from 'react-router-dom';
+import LiquidBackground from '../components/LiquidBackground';
+import CJLogo from '../components/CJLogo';
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [bootLogs, setBootLogs] = useState([]);
 
-  // Boot loader sequence to feel like loading into a game experience
+  // Loading animation progress
   useEffect(() => {
     if (!loading) return;
-
-    const logs = [
-      'SYS_INIT: SPARKING CORE SYSTEM ENGINES...',
-      'LOC_FIND: RETRIEVING LAT/LON COORDINATES...',
-      'LOC_DATA: FOUND // LAT: 34.9496° N - LON: 81.9320° W',
-      'CORE_BUILD: ATTACHING BRAND SYSTEM MATRIX V4.8...',
-      'SHADERS: COMPILED WAVY_GRID_CANVAS (GPU_ACCL)...',
-      'VECTOR_PROC: CACHING BRAND ICON GLYPHS...',
-      'STATUS: SYSTEM RENDER ONLINE // DOSSIER CHANNELS LIVE.',
-    ];
-
-    let currentLogIndex = 0;
-    const logInterval = setInterval(() => {
-      if (currentLogIndex < logs.length) {
-        setBootLogs((prev) => [...prev, logs[currentLogIndex]]);
-        currentLogIndex++;
-      } else {
-        clearInterval(logInterval);
-      }
-    }, 350);
 
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
@@ -38,28 +18,31 @@ const Home = () => {
           clearInterval(progressInterval);
           setTimeout(() => {
             setLoading(false);
-          }, 400);
+          }, 600);
           return 100;
         }
-        const step = Math.floor(Math.random() * 12) + 6;
+        const step = Math.floor(Math.random() * 15) + 8;
         return Math.min(prev + step, 100);
       });
-    }, 120);
+    }, 100);
 
     return () => {
       clearInterval(progressInterval);
-      clearInterval(logInterval);
     };
   }, [loading]);
 
   // Sync theme variables for home page
   useEffect(() => {
-    document.documentElement.style.setProperty('--color-theme', '#7D52FC');
-    document.documentElement.style.setProperty('--color-secondary', '#BCEF0C');
-    document.documentElement.style.setProperty('--color-background', '#CCCCCC');
-    document.documentElement.style.setProperty('--color-primary', '#0C0C11');
-    document.documentElement.style.setProperty('--color-panel', '#FAF9FC');
-    document.documentElement.style.setProperty('--color-details', '#CCCCCC');
+    document.documentElement.classList.remove('light-theme');
+    document.body.classList.remove('light-theme');
+    
+    document.documentElement.style.setProperty('--color-theme', '#7D52FC'); // Slate Blue
+    document.documentElement.style.setProperty('--color-accent', '#C380FF'); // Lavender
+    document.documentElement.style.setProperty('--color-secondary', '#BCEF0C'); // Lime
+    document.documentElement.style.setProperty('--color-background', '#CCCCCC'); // Light Gray
+    document.documentElement.style.setProperty('--color-primary', '#0C0C11'); // Charcoal
+    document.documentElement.style.setProperty('--color-panel', 'rgba(255, 255, 255, 0.45)');
+    document.documentElement.style.setProperty('--color-details', 'rgba(255, 255, 255, 0.65)');
   }, []);
 
   return (
@@ -67,78 +50,142 @@ const Home = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full h-screen flex flex-col relative z-10 bg-[var(--color-background)] lg:overflow-hidden overflow-y-auto"
+      transition={{ duration: 0.6 }}
+      className="w-full h-screen flex flex-col relative z-10 bg-[#CCCCCC] overflow-hidden select-none"
     >
-      <div className="ebbing-gradient" />
-      <WavyGridCanvas />
+      <LiquidBackground />
 
       <AnimatePresence mode="wait">
         {loading ? (
-          /* Game-like Boot Loading Experience Screen */
+          /* Technical HUD Startup Loading Screen */
           <motion.div
             key="loader"
-            className="fixed inset-0 w-full h-full bg-[#CCCCCC] flex flex-col justify-between p-8 z-[1000] font-mono text-xs select-none scanlines-overlay"
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: 'easeInOut' }}
+            className="fixed inset-0 w-full h-full bg-[#CCCCCC] flex flex-col items-center justify-center z-[1000] p-6 overflow-hidden"
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
           >
-            {/* Top Info Grid */}
-            <div className="flex justify-between items-start text-[var(--color-primary)]/60 tracking-wider">
-              <div className="flex flex-col gap-1">
-                <span>[INITIALIZATION_SEQUENCE_V4.8]</span>
-                <span>[HOST: CAMERON_JOHNSON_CORE]</span>
-              </div>
-              <div className="flex flex-col items-end gap-1">
-                <span>LOC: 34.9496° N // LON: 81.9320° W</span>
-                <span>SYS_STATUS: COMPILING_BLUEPRINTS</span>
-              </div>
+            {/* Viewfinder Outer Frame Bracket Overlay for Loader */}
+            <div className="absolute inset-6 border pointer-events-none z-10 transition-all duration-700"
+              style={{ borderColor: 'rgba(12, 12, 17, 0.05)' }}>
+              {/* Corner brackets */}
+              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2" style={{ borderColor: 'rgba(12, 12, 17, 0.2)' }} />
+              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2" style={{ borderColor: 'rgba(12, 12, 17, 0.2)' }} />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2" style={{ borderColor: 'rgba(12, 12, 17, 0.2)' }} />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2" style={{ borderColor: 'rgba(12, 12, 17, 0.2)' }} />
             </div>
 
-            {/* Center Loading progress bar */}
-            <div className="flex-1 flex flex-col items-center justify-center gap-6 relative max-w-sm mx-auto w-full py-16 px-8 border border-[var(--color-primary)]/10 bg-white/5 backdrop-blur-xs hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br">
-              <h3 className="font-display font-bold text-base text-[var(--color-primary)] uppercase tracking-[0.2em]">
-                BOOT_SEQUENCE // {progress}%
-              </h3>
-              <div className="w-full h-2 bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 relative overflow-hidden rounded-none">
-                <motion.div
-                  className="h-full bg-[var(--color-theme)]"
-                  initial={{ width: '0%' }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.08 }}
-                />
+            {/* Scanning Sweep Laser Line */}
+            <div className="hud-scanner-line" />
+
+            <div className="flex flex-col items-center justify-center relative">
+              {/* Glowing Background Glow Aura */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.35, 0.15] }}
+                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                className="absolute w-48 h-48 rounded-full bg-[#7D52FC]/10 blur-3xl"
+              />
+
+              {/* Loader Ring & Logo Container */}
+              <div className="relative w-24 h-24 flex items-center justify-center">
+                {/* Glowing ring */}
+                <svg className="absolute inset-0 w-full h-full transform -rotate-90 z-10" viewBox="0 0 100 100">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke="rgba(0, 0, 0, 0.05)"
+                    strokeWidth="2"
+                    fill="transparent"
+                  />
+                  <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke="url(#loaderGrad)"
+                    strokeWidth="3"
+                    fill="transparent"
+                    strokeDasharray="264"
+                    initial={{ strokeDashoffset: 264 }}
+                    animate={{ strokeDashoffset: 264 - (264 * progress) / 100 }}
+                    transition={{ ease: "easeOut", duration: 0.1 }}
+                  />
+                  <defs>
+                    <linearGradient id="loaderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#7D52FC" />
+                      <stop offset="100%" stopColor="#C380FF" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                {/* Vector Logo - Centered perfectly inside the circle */}
+                <div className="z-20 flex items-center justify-center w-10 h-10">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                  >
+                    <CJLogo className="w-10 h-10 text-[#0C0C11]" />
+                  </motion.div>
+                </div>
               </div>
-              <span className="font-mono text-[9px] text-[var(--color-primary)]/40 tracking-widest uppercase">
-                [ SYS_INTEGRITY: SECURE_LINK_ACTIVE ]
-              </span>
+
+              {/* Small Progress Percentage with changing states */}
+              <motion.span 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.6 }}
+                className="font-mono text-[10px] tracking-[0.2em] text-[#0C0C11]/50 mt-6 block uppercase font-bold text-center"
+              >
+                {progress <= 30 && `SYS.BOOT // SCANNING GRID // ${progress}%`}
+                {progress > 30 && progress <= 70 && `SECURING UPLINK // CALIBRATING TARGETS // ${progress}%`}
+                {progress > 70 && progress < 100 && `CACHE.LOAD // INGESTING DOSSIERS // ${progress}%`}
+                {progress === 100 && `BOOT.SUCCESS // HUD_READY // ${progress}%`}
+              </motion.span>
             </div>
 
-            {/* Scrolling boot logs at bottom */}
-            <div className="h-28 overflow-hidden text-[var(--color-primary)]/50 leading-relaxed font-mono text-[10px] flex flex-col justify-end border-t border-[var(--color-primary)]/10 pt-4">
-              {bootLogs.map((log, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  &gt;_ {log}
-                </motion.div>
-              ))}
+            {/* Technical Log Readouts */}
+            <div className="absolute bottom-12 left-12 right-12 flex flex-col md:flex-row justify-between items-start md:items-end font-mono text-[9px] text-[#0C0C11]/50 gap-4 uppercase font-bold">
+              <div className="flex flex-col gap-1.5">
+                <div className={progress >= 10 ? "text-[#7D52FC] transition-colors duration-300" : "opacity-40 transition-opacity duration-300"}>
+                  &gt; SYS.BOOT // INITIALIZING CORE SYSTEM {progress >= 30 ? "[OK]" : "..."}
+                </div>
+                <div className={progress >= 30 ? "text-[#7D52FC] transition-colors duration-300" : "opacity-40 transition-opacity duration-300"}>
+                  &gt; GRID.SCAN // 3D CYCLORAMA GENERATION {progress >= 55 ? "[OK]" : "..."}
+                </div>
+                <div className={progress >= 55 ? "text-[#7D52FC] transition-colors duration-300" : "opacity-40 transition-opacity duration-300"}>
+                  &gt; UPLINK.SECURE // ESTABLISHING BRAND SAFE ZONE {progress >= 85 ? "[OK]" : "..."}
+                </div>
+                <div className={progress >= 85 ? "text-[#7D52FC] transition-colors duration-300" : "opacity-40 transition-opacity duration-300"}>
+                  &gt; CACHE.LOAD // INGESTING PORTFOLIO DOSSIERS {progress >= 100 ? "[OK]" : "..."}
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-1.5 self-end md:self-auto">
+                <div>CPU.TEMP // 42°C</div>
+                <div>RESOLVE // {typeof window !== 'undefined' ? `${window.innerWidth}X${window.innerHeight}` : '1920X1080'}</div>
+                <div className="text-[var(--color-secondary)]">SYS.STATUS // CALIBRATING</div>
+              </div>
             </div>
           </motion.div>
         ) : (
-          /* Clean, Simplistic Revealed Experience */
+          /* Clean Revealed Glassmorphic HUD Homepage */
           <motion.div
             key="content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="w-full h-full flex flex-col items-center justify-center p-6 relative"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full h-full flex flex-col items-center justify-center p-6 relative z-10"
           >
-            {/* Center Brand Identity block */}
-            <div className="flex flex-col items-center text-center mt-[40px] lg:mt-0 relative p-8 lg:p-12 border border-[var(--color-primary)]/5 bg-[var(--color-panel)]/30 backdrop-blur-xs max-w-4xl w-full hud-anchor hud-anchor-tl hud-anchor-tr hud-anchor-bl hud-anchor-br">
-              <span className="font-mono text-xs tracking-[0.3em] text-[var(--color-theme)] uppercase mb-4 block font-bold">
-                [ STRATEGY COMES BEFORE STYLE ]
+            {/* Center Brand Identity block (No floating card container, typography floats directly on backdrop) */}
+            <div className="max-w-3xl w-full flex flex-col items-center text-center relative px-6 py-12">
+              
+              {/* Corner indicators for HUD feel */}
+              <span className="absolute top-4 left-4 font-mono text-[7px] text-[#0C0C11]/30 font-bold">[SYS.MATRIX]</span>
+              <span className="absolute top-4 right-4 font-mono text-[7px] text-[#0C0C11]/30 font-bold">V4.8_ACTIVE</span>
+              <span className="absolute bottom-4 left-4 font-mono text-[7px] text-[#0C0C11]/30 font-bold">+</span>
+              <span className="absolute bottom-4 right-4 font-mono text-[7px] text-[#0C0C11]/30 font-bold">+</span>
+
+              <span className="font-mono text-[10px] tracking-[0.3em] text-[#7D52FC] uppercase mb-4 block font-bold">
+                STRATEGY COMES BEFORE STYLE
               </span>
               
               <motion.h2 
@@ -147,24 +194,23 @@ const Home = () => {
                   visible: {
                     opacity: 1,
                     transition: {
-                      staggerChildren: 0.04,
+                      staggerChildren: 0.05,
                       delayChildren: 0.1
                     }
                   }
                 }}
                 initial="hidden"
                 animate="visible"
-                className="text-5xl md:text-7xl lg:text-[84px] font-display font-bold leading-none uppercase tracking-tighter text-[var(--color-primary)] flex flex-wrap justify-center gap-x-[0.25em]"
+                className="text-5xl md:text-7xl lg:text-[76px] font-display font-bold leading-none uppercase tracking-tight text-[#0C0C11] flex flex-wrap justify-center gap-x-[0.2em]"
               >
                 <span className="flex">
                   {"CAMERON".split("").map((char, index) => (
                     <motion.span 
                       key={index} 
                       variants={{
-                        hidden: { opacity: 0, y: 30 },
-                        visible: { opacity: 1, y: 0, transition: { type: "spring", damping: 15, stiffness: 150 } }
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0, transition: { type: "spring", damping: 15 } }
                       }} 
-                      style={{ paddingLeft: char === 'A' ? '0.08em' : '0' }}
                       className="inline-block"
                     >
                       {char}
@@ -176,10 +222,10 @@ const Home = () => {
                     <motion.span 
                       key={index} 
                       variants={{
-                        hidden: { opacity: 0, y: 30 },
-                        visible: { opacity: 1, y: 0, transition: { type: "spring", damping: 15, stiffness: 150 } }
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0, transition: { type: "spring", damping: 15 } }
                       }} 
-                      className="inline-block"
+                      className="inline-block text-[var(--color-theme)]"
                     >
                       {char}
                     </motion.span>
@@ -187,66 +233,66 @@ const Home = () => {
                 </span>
               </motion.h2>
               
-              {/* Thick Expanding Theme Underline Block */}
+              {/* Thin Slate Blue Line */}
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: '100%' }}
+                animate={{ width: '60%' }}
                 transition={{ delay: 0.6, duration: 1.0, ease: 'easeOut' }}
-                className="w-full max-w-2xl h-[4px] bg-[var(--color-theme)] mt-3"
+                className="h-[1.5px] bg-[var(--color-theme)]/20 mt-6 mb-6"
               />
 
-              <p className="font-sans text-base text-[var(--color-primary)]/75 max-w-lg mt-6 leading-relaxed">
-                Cameron Johnson operates at the intersection of brand logic and visual architecture, constructing dynamic interactive design frameworks.
+              <p className="font-sans text-sm md:text-base text-[#0C0C11]/70 max-w-lg leading-relaxed font-medium">
+                A multidisciplinary creative director structuring high-fidelity interactive design systems, brand guidelines, and visual architectures.
               </p>
 
-              {/* Call to Action to Works Page */}
+              {/* Call to Action Button - Solid slate blue background */}
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0, duration: 0.6 }}
-                className="mt-10"
+                transition={{ delay: 0.8, duration: 0.5 }}
+                className="mt-8"
               >
-                <Link
+                <RouterLink
                   to="/works"
                   data-cursor="explore"
-                  className="inline-flex items-center gap-4 px-8 py-3.5 bg-[var(--color-theme)] hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-white font-mono text-xs uppercase tracking-[0.25em] font-bold border border-[var(--color-primary)]/15 hover:border-[var(--color-primary)]/30 transition-all duration-300 rounded-none shadow-sm cursor-pointer group glow-border"
+                  className="inline-flex items-center gap-3 px-8 py-3.5 bg-[#7D52FC] hover:bg-[#C380FF] text-[#FAF9FC] font-display text-xs uppercase tracking-[0.2em] font-bold rounded-[2px] border border-white/20 shadow-[0_4px_16px_rgba(125,82,252,0.25)] transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <span>[ ENTER WORKSTATION ]</span>
-                  <span className="group-hover:translate-x-1.5 transition-transform duration-200">→</span>
-                </Link>
+                  <span>ENTER WORKSTATION</span>
+                  <span className="text-sm">→</span>
+                </RouterLink>
               </motion.div>
             </div>
 
-            {/* Bottom Row: Areas of Work rectangular panels */}
-            <div className="absolute bottom-16 left-0 right-0 flex flex-wrap justify-center gap-3 px-6 lg:gap-4">
+            {/* Bottom Row: Areas of Work rectangular panels (styled as dark glass for dark gradient background) */}
+            <div className="absolute bottom-16 left-0 right-0 flex flex-wrap justify-center gap-3 px-6 lg:gap-4 z-20">
               {[
                 { num: '01', title: 'Systems Design' },
                 { num: '02', title: 'Brand Identity' },
                 { num: '03', title: 'Interactive Strategy' },
                 { num: '04', title: 'AI Curation' },
               ].map((item, idx) => (
-                <Link
+                <RouterLink
                   key={idx}
                   to="/works"
                   data-cursor="view"
-                  className="flex items-center border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 text-[var(--color-primary)] font-mono text-xs overflow-hidden rounded-none hover:border-[var(--color-theme)] hover:bg-[var(--color-primary)]/10 transition-all duration-300 cursor-pointer group glow-border"
+                  className="bg-[#14141C]/45 hover:bg-[#14141C]/65 backdrop-blur-md flex items-center overflow-hidden hover:scale-105 transition-all duration-300 rounded-[2px] border border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.15)] group"
                 >
-                  <span className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-2.5 py-1.5 font-bold border-r border-[var(--color-primary)]/30 group-hover:bg-[var(--color-theme)] group-hover:text-white transition-colors duration-300">
+                  <span className="bg-white/5 text-[#BCEF0C] px-3 py-1.5 font-mono text-[10px] font-bold border-r border-white/10">
                     {item.num}
                   </span>
-                  <span className="px-3.5 py-1.5 font-bold uppercase tracking-wider text-[var(--color-primary)]/80 group-hover:text-[var(--color-primary)]">
+                  <span className="px-4 py-1.5 font-display text-xs font-bold uppercase tracking-wider text-[#FAF9FC] group-hover:text-white transition-colors">
                     {item.title}
                   </span>
-                </Link>
+                </RouterLink>
               ))}
             </div>
 
-            {/* Bottom Left status indicator */}
-            <div className="absolute bottom-6 left-8 flex items-center gap-2 font-mono text-[10px] text-[var(--color-primary)]/50">
-              <span>ACTIVE //</span>
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-secondary)] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-secondary)]"></span>
+            {/* Bottom Left status indicator (light color for dark gradient background) */}
+            <div className="absolute bottom-6 left-8 flex items-center gap-2 font-mono text-[10px] text-[#FAF9FC]/40 font-bold">
+              <span>SYSTEMS ONLINE //</span>
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-none bg-[#BCEF0C] opacity-75"></span>
+                <span className="relative inline-flex rounded-none h-1.5 w-1.5 bg-[#BCEF0C]"></span>
               </span>
             </div>
           </motion.div>

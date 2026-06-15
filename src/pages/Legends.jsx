@@ -4,7 +4,7 @@ import { portfolioLegends } from '../data/legends';
 import LegendMenu from '../components/LegendMenu';
 import LegendDisplay from '../components/LegendDisplay';
 import LegendDetails from '../components/LegendDetails';
-import WavyGrid from '../components/WavyGrid';
+import LiquidBackground from '../components/LiquidBackground';
 import GalleryCarousel from '../components/GalleryCarousel';
 
 const Legends = () => {
@@ -32,12 +32,13 @@ const Legends = () => {
     document.documentElement.style.setProperty('--color-background', currentLegend.bgColor || '#0a0a0a');
     document.documentElement.style.setProperty('--color-text', currentLegend.textColor || '#ffffff');
     
-    // Cleanup on unmount
     return () => {
-      document.documentElement.style.setProperty('--color-theme', '#c380ff');
-      document.documentElement.style.setProperty('--color-secondary', '#ffffff');
-      document.documentElement.style.setProperty('--color-background', '#0a0a0a');
-      document.documentElement.style.setProperty('--color-text', '#ffffff');
+      document.documentElement.style.setProperty('--color-theme', '#7D52FC');
+      document.documentElement.style.setProperty('--color-secondary', '#BCEF0C');
+      document.documentElement.style.setProperty('--color-background', '#CCCCCC');
+      document.documentElement.style.setProperty('--color-primary', '#0C0C11');
+      document.documentElement.style.setProperty('--color-panel', 'rgba(255, 255, 255, 0.45)');
+      document.documentElement.style.setProperty('--color-details', 'rgba(255, 255, 255, 0.65)');
     };
   }, [currentLegend]);
 
@@ -57,7 +58,7 @@ const Legends = () => {
           <div 
             key={legend.id}
             onClick={() => handleSelect(legend.id)}
-            className={`flex-shrink-0 cursor-pointer transition-all duration-300 w-24 aspect-square bg-[var(--color-background)] border flex items-center justify-center p-4 rounded-xl ${
+            className={`flex-shrink-0 cursor-pointer transition-all duration-300 w-24 aspect-square bg-[var(--color-background)] border flex items-center justify-center p-4 rounded-[2px] ${
               selectedId === legend.id ? 'border-[var(--color-theme)] scale-105 shadow-[0_0_15px_var(--color-theme)] bg-[var(--color-theme)]/10' : 'border-transparent opacity-50 hover:opacity-100'
             }`}
           >
@@ -68,7 +69,7 @@ const Legends = () => {
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden w-full h-full relative overflow-hidden transition-colors duration-700">
         <div className="ebbing-gradient" />
-        <WavyGrid />
+        <LiquidBackground />
         
         {showGallery ? (
            <GalleryCarousel legend={currentLegend} />

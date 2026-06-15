@@ -13,48 +13,49 @@ const LegendMenu = ({ selectedId, onSelect, legends, showGallery, viewMode = 'do
   return (
     <>
       {/* Desktop Sidebar (lg:flex) */}
-      <div className="hidden lg:flex flex-col w-[320px] h-full overflow-y-auto pt-36 pb-12 px-8 z-40 custom-scrollbar transition-colors duration-700 select-none">
+      <div className="hidden lg:flex flex-col w-[325px] h-full overflow-y-auto pt-32 pb-12 px-6 z-40 custom-scrollbar transition-all duration-700 select-none border-r border-white/10 dot-grid-bg">
         <style>{`
           .custom-scrollbar::-webkit-scrollbar { display: none; }
           .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         `}</style>
         
-        <div className="mb-8">
-          <span className="font-mono text-[9px] tracking-widest text-[var(--color-primary)]/40 uppercase block mb-1">PROJECT DIRECTORY</span>
-          <h2 className="text-3xl font-display font-bold tracking-tighter text-[var(--color-primary)] uppercase">
+        <div className="mb-8 px-2">
+          <span className="font-mono text-[9px] tracking-widest text-[var(--color-primary)]/40 uppercase block mb-1 font-bold">PROJECT DIRECTORY</span>
+          <h2 className="text-2xl font-display font-bold tracking-tight text-[var(--color-primary)] uppercase">
             LEGENDS
           </h2>
+          
           {/* Workstation view mode selectors */}
-          <div className="flex gap-2 mt-3 font-mono text-[9px]">
+          <div className="flex gap-1.5 mt-4 p-1 bg-[var(--color-primary)]/5 border border-white/10 rounded-[2px] font-display text-[9px] max-w-[210px]">
             <button 
               onClick={() => onViewModeChange && onViewModeChange('dossier')}
               data-cursor="explore"
-              className={`px-3 py-1.5 border transition-all duration-300 rounded-none cursor-pointer ${
+              className={`flex-1 px-3 py-1.5 transition-all duration-300 rounded-[2px] cursor-pointer uppercase font-bold text-center ${
                 viewMode === 'dossier' 
-                  ? 'border-[var(--color-theme)] bg-[var(--color-theme)]/15 text-[var(--color-primary)] font-bold' 
-                  : 'border-[var(--color-primary)]/10 text-[var(--color-primary)]/50 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/30'
+                  ? 'bg-white/40 text-[var(--color-primary)] shadow-xs' 
+                  : 'text-[var(--color-primary)]/50 hover:text-[var(--color-primary)]'
               }`}
             >
-              [ WORKBENCH ]
+              Legends
             </button>
             <button 
               onClick={() => onViewModeChange && onViewModeChange('grid')}
               data-cursor="explore"
-              className={`px-3 py-1.5 border transition-all duration-300 rounded-none cursor-pointer ${
+              className={`flex-1 px-3 py-1.5 transition-all duration-300 rounded-[2px] cursor-pointer uppercase font-bold text-center ${
                 viewMode === 'grid' 
-                  ? 'border-[var(--color-theme)] bg-[var(--color-theme)]/15 text-[var(--color-primary)] font-bold' 
-                  : 'border-[var(--color-primary)]/10 text-[var(--color-primary)]/50 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/30'
+                  ? 'bg-white/40 text-[var(--color-primary)] shadow-xs' 
+                  : 'text-[var(--color-primary)]/50 hover:text-[var(--color-primary)]'
               }`}
             >
-              [ ARCHIVE_GRID ]
+              Grid View
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col border-t border-[var(--color-primary)]/10">
+        <div className="flex flex-col gap-2.5">
           {legends.map((legend, index) => {
             const isSelected = selectedId === legend.id;
-            const formattedIndex = `[${String(index + 1).padStart(2, '0')}]`;
+            const formattedIndex = `${String(index + 1).padStart(2, '0')}`;
             
             if (isSelected) {
               const [line1, line2] = splitTitle(legend.title);
@@ -62,11 +63,15 @@ const LegendMenu = ({ selectedId, onSelect, legends, showGallery, viewMode = 'do
                 <div 
                   key={legend.id}
                   onClick={() => onSelect(legend.id)}
-                  className="flex items-stretch border border-[var(--color-primary)] bg-white my-2 transition-all duration-300 select-none shadow-sm cursor-pointer group rounded-none"
+                  className="flex items-stretch border border-white/20 bg-white/25 shadow-xs my-1 transition-all duration-400 select-none cursor-pointer group rounded-[2px]"
+                  style={{
+                    boxShadow: `0 8px 32px 0 rgba(12,12,17,0.03), 0 0 12px ${legend.themeColor}1a`,
+                    borderColor: `${legend.themeColor}33`
+                  }}
                 >
-                  <div className="flex-1 flex items-center gap-3 p-2.5">
+                  <div className="flex-1 flex items-center gap-3.5 p-3">
                     {/* Enlarged logo that fills the cell */}
-                    <div className="w-12 h-12 bg-white flex items-center justify-center p-0.5 border border-gray-100 flex-shrink-0">
+                    <div className="w-12 h-12 bg-white/5 flex items-center justify-center p-2 border border-white/10 rounded-[2px] flex-shrink-0">
                       <img 
                         src={legend.file} 
                         alt={legend.title} 
@@ -74,18 +79,21 @@ const LegendMenu = ({ selectedId, onSelect, legends, showGallery, viewMode = 'do
                       />
                     </div>
                     <div className="flex flex-col justify-center">
-                      <span className="font-display font-bold text-base text-black leading-tight uppercase tracking-wider">
+                      <span className="font-display font-bold text-sm text-[var(--color-primary)] leading-tight uppercase tracking-wider">
                         {line1}
                       </span>
                       {line2 && (
-                        <span className="font-display font-bold text-base text-black leading-tight uppercase tracking-wider">
+                        <span className="font-display font-bold text-sm text-[var(--color-primary)] leading-tight uppercase tracking-wider">
                           {line2}
                         </span>
                       )}
                     </div>
                   </div>
-                  {/* Theme/Secondary block with white/black arrow on hover */}
-                  <div className="w-12 bg-[var(--color-theme)] group-hover:bg-[var(--color-secondary)] text-white group-hover:text-black flex items-center justify-center text-xl font-mono flex-shrink-0 transition-all duration-300">
+                  {/* Theme/Secondary block with arrow */}
+                  <div 
+                    className="w-10 text-white flex items-center justify-center text-sm font-mono flex-shrink-0 transition-all duration-300 rounded-r-[2px]"
+                    style={{ backgroundColor: legend.themeColor }}
+                  >
                     →
                   </div>
                 </div>
@@ -96,23 +104,23 @@ const LegendMenu = ({ selectedId, onSelect, legends, showGallery, viewMode = 'do
               <div 
                 key={legend.id}
                 onClick={() => onSelect(legend.id)}
-                className="flex items-center justify-between py-4 border-b border-[var(--color-primary)]/10 cursor-pointer group transition-all duration-300 hover:bg-[var(--color-primary)]/[0.01]"
+                className="flex items-center justify-between p-3 border border-transparent rounded-[2px] cursor-pointer group transition-all duration-300 hover:bg-white/20 hover:border-white/10"
               >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <span className="font-mono text-sm text-[var(--color-theme)] group-hover:text-[var(--color-secondary)] tracking-tighter transition-colors duration-300">
+                <div className="flex items-center gap-3.5 overflow-hidden">
+                  <span className="font-mono text-xs text-[var(--color-primary)]/45 group-hover:text-[var(--color-theme)] transition-colors duration-300 font-bold">
                     {formattedIndex}
                   </span>
                   
                   {/* Thumbnail box: w-12 h-12, p-0.5, no grayscale, soft opacity */}
-                  <div className="w-12 h-12 border bg-white flex items-center justify-center p-0.5 transition-all duration-500 border-[var(--color-primary)]/10 group-hover:border-[var(--color-primary)]/30 flex-shrink-0 rounded-none">
+                  <div className="w-12 h-12 border bg-white/5 flex items-center justify-center p-2 transition-all duration-500 border-white/10 group-hover:border-white/20 flex-shrink-0 rounded-[2px]">
                     <img 
                       src={legend.file} 
                       alt={legend.title} 
-                      className="w-full h-full object-contain transition-all duration-500 opacity-70 group-hover:opacity-100 group-hover:scale-105"
+                      className="w-full h-full object-contain transition-all duration-500 opacity-60 group-hover:opacity-100 group-hover:scale-105"
                     />
                   </div>
 
-                  <span className={`font-sans font-bold text-lg tracking-wider transition-all duration-500 text-[var(--color-primary)]/60 group-hover:text-[var(--color-primary)] whitespace-nowrap ${
+                  <span className={`font-display font-bold text-sm tracking-wide transition-all duration-500 text-[var(--color-primary)]/60 group-hover:text-[var(--color-primary)] whitespace-nowrap ${
                     showGallery 
                       ? 'max-w-0 opacity-0 group-hover:max-w-[240px] group-hover:opacity-100 group-hover:ml-1' 
                       : 'max-w-[240px] opacity-100'
@@ -121,7 +129,7 @@ const LegendMenu = ({ selectedId, onSelect, legends, showGallery, viewMode = 'do
                   </span>
                 </div>
 
-                <span className={`font-mono text-sm transition-all duration-300 mr-1 text-[var(--color-primary)]/20 group-hover:text-[var(--color-secondary)] group-hover:translate-x-1 ${
+                <span className={`font-mono text-xs transition-all duration-300 mr-1 text-[var(--color-primary)]/20 group-hover:text-[var(--color-theme)] group-hover:translate-x-1 ${
                   showGallery ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
                 }`}>
                   →
@@ -133,26 +141,28 @@ const LegendMenu = ({ selectedId, onSelect, legends, showGallery, viewMode = 'do
       </div>
 
       {/* Mobile Horizontal Bar (lg:hidden) */}
-      <div className="lg:hidden w-full overflow-x-auto flex gap-4 px-6 py-4 border-b border-[var(--color-primary)]/10 bg-[var(--color-background)]/80 backdrop-blur-md sticky top-[80px] z-30 select-none custom-scrollbar">
+      <div className="lg:hidden w-full overflow-x-auto flex gap-3 px-6 py-4 border-b border-white/10 bg-[var(--color-background)]/85 backdrop-blur-xl sticky top-[76px] z-30 select-none custom-scrollbar">
         {legends.map((legend, index) => {
           const isSelected = selectedId === legend.id;
-          const formattedIndex = `[${String(index + 1).padStart(2, '0')}]`;
+          const formattedIndex = `${String(index + 1).padStart(2, '0')}`;
           
           return (
             <div 
               key={legend.id}
               onClick={() => onSelect(legend.id)}
-              className={`flex-shrink-0 flex items-center gap-3 px-4 py-2 border cursor-pointer transition-all duration-300 rounded-none ${
-                isSelected ? 'border-[var(--color-secondary)] bg-[var(--color-primary)]/[0.03]' : 'border-[var(--color-primary)]/10 bg-transparent'
+              className={`flex-shrink-0 flex items-center gap-3 px-4 py-2.5 border cursor-pointer transition-all duration-300 rounded-[2px] ${
+                isSelected 
+                  ? 'border-[var(--color-theme)] bg-white/20 shadow-xs' 
+                  : 'border-white/10 bg-white/5 opacity-70 hover:opacity-100'
               }`}
             >
-              <span className="font-mono text-xs text-[var(--color-secondary)]">{formattedIndex}</span>
+              <span className="font-mono text-[10px] text-[var(--color-primary)]/40 font-bold">{formattedIndex}</span>
               <img 
                 src={legend.file} 
                 alt={legend.title} 
-                className={`w-8 h-8 object-contain transition-all duration-300 ${isSelected ? 'opacity-100 scale-105' : 'opacity-70'}`} 
+                className={`w-6 h-6 object-contain transition-all duration-300 ${isSelected ? 'opacity-100 scale-105' : 'opacity-65'}`} 
               />
-              <span className={`font-sans font-bold text-sm tracking-wider text-[var(--color-primary)] transition-all duration-300 ${
+              <span className={`font-display font-bold text-xs tracking-wider text-[var(--color-primary)] transition-all duration-300 ${
                 showGallery && !isSelected ? 'hidden' : 'block'
               }`}>{legend.title}</span>
             </div>

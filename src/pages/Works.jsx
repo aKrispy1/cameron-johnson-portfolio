@@ -5,7 +5,7 @@ import LegendMenu from '../components/LegendMenu';
 import LegendDisplay from '../components/LegendDisplay';
 import LegendDetails from '../components/LegendDetails';
 import CaseStudyView from '../components/CaseStudyView';
-import WavyGridCanvas from '../components/WavyGridCanvas';
+import LiquidBackground from '../components/LiquidBackground';
 import MobileWorksView from '../components/MobileWorksView';
 import PortfolioGridView from '../components/PortfolioGridView';
 
@@ -48,8 +48,8 @@ const Works = () => {
       document.documentElement.style.setProperty('--color-secondary', currentLegend.secondaryColor || '#BCEF0C');
       document.documentElement.style.setProperty('--color-background', currentLegend.bgColor || '#F3F3F5');
       document.documentElement.style.setProperty('--color-primary', currentLegend.textColor || '#0C0C11');
-      document.documentElement.style.setProperty('--color-panel', currentLegend.bgColor === '#0a0a0a' ? '#14141c' : '#FAF9FC');
-      document.documentElement.style.setProperty('--color-details', currentLegend.bgColor === '#0a0a0a' ? '#14141c' : '#CCCCCC');
+      document.documentElement.style.setProperty('--color-panel', currentLegend.bgColor === '#0a0a0a' ? 'rgba(20, 20, 28, 0.6)' : 'rgba(255, 255, 255, 0.45)');
+      document.documentElement.style.setProperty('--color-details', currentLegend.bgColor === '#0a0a0a' ? 'rgba(20, 20, 28, 0.8)' : 'rgba(255, 255, 255, 0.65)');
     }
 
     return () => {
@@ -58,8 +58,8 @@ const Works = () => {
       document.documentElement.style.setProperty('--color-secondary', '#BCEF0C');
       document.documentElement.style.setProperty('--color-background', '#CCCCCC');
       document.documentElement.style.setProperty('--color-primary', '#0C0C11');
-      document.documentElement.style.setProperty('--color-panel', '#FAF9FC');
-      document.documentElement.style.setProperty('--color-details', '#CCCCCC');
+      document.documentElement.style.setProperty('--color-panel', 'rgba(255, 255, 255, 0.45)');
+      document.documentElement.style.setProperty('--color-details', 'rgba(255, 255, 255, 0.65)');
     };
   }, [currentLegend]);
 
@@ -93,7 +93,7 @@ const Works = () => {
       className="w-full h-screen flex flex-col lg:flex-row relative z-10 pt-[80px] lg:pt-0 bg-[var(--color-background)] transition-colors duration-700 lg:overflow-hidden overflow-y-auto"
     >
       <div className="ebbing-gradient" />
-      <WavyGridCanvas />
+      <LiquidBackground />
 
       {/* Background dimmer overlay when presentation is open */}
       <div className={`absolute inset-0 bg-black/20 transition-opacity duration-700 pointer-events-none z-0 ${
@@ -102,7 +102,7 @@ const Works = () => {
 
       {/* Left Column - Project Directory Menu */}
       <div className={`transition-all duration-700 z-40 ${
-        showGallery ? 'opacity-40 lg:opacity-30 blur-[0.5px] pointer-events-none' : 'opacity-100'
+        showGallery ? 'hidden' : 'opacity-100'
       }`}>
         <LegendMenu 
           selectedId={selectedId} 
@@ -130,10 +130,14 @@ const Works = () => {
             <CaseStudyView 
               legend={currentLegend} 
               onClose={() => setShowGallery(false)} 
+              onPrevProject={handlePrevCaseStudy}
               onNextProject={handleNextCaseStudy}
             />
           ) : (
-            <LegendDisplay legend={currentLegend} />
+            <LegendDisplay 
+              legend={currentLegend} 
+              onStartPresentation={() => setShowGallery(true)}
+            />
           )}
 
           {/* Right Pane - Details sheet */}
